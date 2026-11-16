@@ -1,0 +1,232 @@
+
+import hashlib
+from pathlib import Path
+
+import chromadb
+import fitz
+from sentence_transformers import SentenceTransformer
+
+from backend.core.config import settings
+
+
+# ==========================================
+# CONFIGURATION
+# ==========================================
+
+PDF_FOLDER = Path("data/uploads")
+
+NEW_COLLECTION = "grade9_science_textbooks_multilingual"
+
+MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+
+CHUNK_SIZE = 1800
+CHUNK_OVERLAP = 300
+MIN_CHUNK_SIZE = 100
+
+BATCH_SIZE = 32
+DB_BATCH_SIZE = 100
+
+
+# ==========================================
+# FIND UNIQUE PDF FILES
+# ==========================================
+
+def find_unique_pdfs():
+    pdf_files = sorted(PDF_FOLDER.glob("*.pdf"))
+
+    if not pdf_files:
+        raise FileNotFoundError("ไม่พบไฟล์ PDF ใน data/uploads")
+
+    unique_files = {}
+
+    for pdf_path in pdf_files:
+        sha256 = hashlib.sha256(pdf_path.read_bytes()).hexdigest()
+
+        if sha256 not in unique_files:
+            unique_files[sha256] = pdf_path
+        else:
+            print(f"[SKIP DUPLICATE] {pdf_path.name}")
+
+    return list(unique_files.values())
+
+
+# ==========================================
+# SPLIT TEXT INTO CHUNKS
+# ==========================================
+
+def split_text(text):
+    text = " ".join(text.split())
+
+    if not text:
+        return []
+
+    chunks = []
+    start = 0
+
+    while start < len(text):
+        end = min(start + CHUNK_SIZE, len(text))
+        chunk = text[start:end].strip()
+
+        if chunk:
+            if len(chunk) < MIN_CHUNK_SIZE and chunks:
+                chunks[-1] += " " + chunk
+            elif len(chunk) >= MIN_CHUNK_SIZE:
+                chunks.append(chunk)
+
+        if end >= len(text):
+            break
+
+        start = end - CHUNK_OVERLAP
+
+    return chunks
+
+
+# ==========================================
+# EXTRACT PDF CONTENT
+# ==========================================
+
+def extract_pdf(pdf_path):
+    records = []
+
+    doc = fitz.open(pdf_path)
+
+    try:
+        for page_index, page in enumerate(doc):
+            page_text = page.get_text("text")
+
+            chunks = split_text(page_text)
+
+            for chunk_index, chunk in enumerate(chunks):
+                records.append({
+                    "id": (
+                        f"{pdf_path.stem}_"
+                        f"p{page_index + 1}_"
+                        f"c{chunk_index + 1}"
+                    ),
+                    "text": chunk,
+                    "metadata": {
+                        "source_file": pdf_path.name,
+                        "page": page_index + 1,
+                        "chunk": chunk_index + 1,
+                    }
+                })
+
+    finally:
+        doc.close()
+
+    return records
+
+
+# ==========================================
+# MAIN
+# ==========================================
+
+def main():
+    print("=" * 60)
+    print("SciTutor - Multilingual Database Builder")
+    print("=" * 60)
+
+    pdf_files = find_unique_pdfs()
+
+    print(f"\nUnique PDF files: {len(pdf_files)}")
+
+    for pdf in pdf_files:
+        print(f"  - {pdf.name}")
+
+    # Load multilingual model
+    print("\n[1/4] Loading multilingual embedding model...")
+
+    model = SentenceTransformer(MODEL_NAME)
+
+    print("[OK] Model loaded")
+
+    # Connect to existing database directory
+    print("\n[2/4] Connecting to ChromaDB...")
+
+    client = chromadb.PersistentClient(
+        path=str(settings.chroma_path)
+    )
+
+    existing = client.list_collections()
+
+    existing_names = [
+        c.name if hasattr(c, "name") else c
+        for c in existing
+    ]
+
+    if NEW_COLLECTION in existing_names:
+        old_collection = client.get_collection(NEW_COLLECTION)
+
+        if old_collection.count() > 0:
+            raise RuntimeError(
+                f"Collection {NEW_COLLECTION} already contains data. "
+                "Stop to prevent duplicate indexing."
+            )
+
+        collection = old_collection
+    else:
+        collection = client.create_collection(
+            name=NEW_COLLECTION,
+            metadata={"hnsw:space": "cosine"}
+        )
+
+    print(f"[OK] Collection: {NEW_COLLECTION}")
+
+    # Extract PDF text
+    print("\n[3/4] Extracting PDF text...")
+
+    all_records = []
+
+    for pdf_path in pdf_files:
+        print(f"\nReading: {pdf_path.name}")
+
+        records = extract_pdf(pdf_path)
+
+        print(f"  Chunks: {len(records)}")
+
+        all_records.extend(records)
+
+    if not all_records:
+        raise RuntimeError("ไม่พบข้อความที่สามารถนำไปทำ Embeddings ได้")
+
+    print(f"\nTotal chunks: {len(all_records)}")
+
+    # Generate embeddings and save in batches
+    print("\n[4/4] Generating embeddings and saving...")
+
+    total = len(all_records)
+
+    for start in range(0, total, DB_BATCH_SIZE):
+        batch = all_records[start:start + DB_BATCH_SIZE]
+
+        texts = [item["text"] for item in batch]
+
+        embeddings = model.encode(
+            texts,
+            batch_size=BATCH_SIZE,
+            normalize_embeddings=True,
+            show_progress_bar=False
+        )
+
+        collection.add(
+            ids=[item["id"] for item in batch],
+            documents=texts,
+            metadatas=[item["metadata"] for item in batch],
+            embeddings=embeddings.tolist()
+        )
+
+        completed = min(start + len(batch), total)
+
+        print(f"  Indexed: {completed}/{total}")
+
+    print("\n" + "=" * 60)
+    print("DATABASE BUILD COMPLETE!")
+    print("=" * 60)
+
+    print("Collection:", NEW_COLLECTION)
+    print("Total chunks:", collection.count())
+    print("Database:", settings.chroma_path)
+
+
+if __name__ == "__main__":
+    main()

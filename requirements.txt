@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+chromadb
+python-dotenv
+pydantic
+python-multipart
+pymupdf
+pytest
+httpx
+sentence-transformers

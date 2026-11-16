@@ -1,0 +1,1 @@
+คงหน้า HTML เดิมไว้และเปลี่ยน path asset; แยก JS เป็นโมดูล; เอาข้อความ Markdown ที่ปะปนใน JS ออก; ลบ mock OCR/fallback; PDF upload เรียก API จริง; เอาค่าความแม่นยำและ Zero Hallucination ที่ไม่มีหลักฐานออก; Gemini key อยู่ฝั่ง backend; survey ใช้ข้อมูลที่บันทึกจริง

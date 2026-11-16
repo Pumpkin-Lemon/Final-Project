@@ -1,0 +1,271 @@
+﻿{
+  "dataset_name": "SciTutor Retrieval Evaluation",
+  "version": "1.0",
+  "created_date": "2026-11-15",
+  "description": "Evaluation dataset for comparing baseline retrieval, multi-query RRF, and hybrid retrieval.",
+  "evaluation_settings": {
+    "top_k": 4,
+    "rrf_k": 60,
+    "evaluation_unit": "unique_pdf_page",
+    "metrics": [
+      "Recall@4",
+      "MRR@4",
+      "Precision@4"
+    ]
+  },
+  "questions": [
+    {
+      "id": "Q01",
+      "topic": "Recessive allele",
+      "main_question": "สิ่งมีชีวิตจะแสดงลักษณะด้อยได้เมื่อใด",
+      "queries": [
+        "สิ่งมีชีวิตจะแสดงลักษณะด้อยได้เมื่อใด",
+        "แอลลีลด้อยทั้งสองแอลลีล",
+        "tt แสดงลักษณะต้นเตี้ย"
+      ],
+      "gold_pages": [
+        76
+      ],
+      "candidate_pages": [
+        76
+      ],
+      "observed_rrf_top3": [
+        76,
+        125,
+        11
+      ],
+      "previous_assessment": "good",
+      "ground_truth_status": "verified",
+      "notes": "หน้า 76 มีข้อความอธิบายว่าลักษณะด้อยแสดงออกเมื่อมีแอลลีลด้อยทั้งสองแอลลีล Ground Truth verified: page 76 directly defines recessive allele expression and gives TT/Tt/tt examples.",
+      "historical_baseline_query": "สิ่งมีชีวิตจะแสดงลักษณะทางพันธุกรรมที่ควบคุมด้วยแอลลีลด้อยได้เมื่อใด"
+    },
+    {
+      "id": "Q02",
+      "topic": "Genotype and phenotype",
+      "main_question": "จีโนไทป์กับฟีโนไทป์แตกต่างกันอย่างไร",
+      "queries": [
+        "จีโนไทป์กับฟีโนไทป์แตกต่างกันอย่างไร",
+        "ความหมายของ genotype และ phenotype",
+        "รูปแบบการเข้าคู่ของแอลลีลและลักษณะที่แสดงออก"
+      ],
+      "gold_pages": [
+        79
+      ],
+      "candidate_pages": [
+        79,
+        81
+      ],
+      "observed_rrf_top3": [
+        13,
+        60,
+        75
+      ],
+      "previous_assessment": "partial",
+      "ground_truth_status": "verified",
+      "notes": "หน้า 79 และ 81 มีเนื้อหาเกี่ยวกับความสัมพันธ์ระหว่างจีโนไทป์และฟีโนไทป์ Ground Truth verified: page 79 directly defines genotype as allele-pair forms and phenotype as the expressed characteristic resulting from genotype."
+    },
+    {
+      "id": "Q03",
+      "topic": "TT Tt tt",
+      "main_question": "ถั่วลันเตาที่มีจีโนไทป์ TT Tt และ tt จะแสดงลักษณะอย่างไร",
+      "queries": [
+        "ถั่วลันเตาที่มีจีโนไทป์ TT Tt และ tt จะแสดงลักษณะอย่างไร",
+        "TT Tt tt แสดงลักษณะต้นสูงต้นเตี้ย",
+        "แอลลีลเด่น T และแอลลีลด้อย t"
+      ],
+      "gold_pages": [
+        76,
+        78
+      ],
+      "candidate_pages": [
+        76,
+        78
+      ],
+      "observed_rrf_top3": [
+        134,
+        60,
+        13
+      ],
+      "previous_assessment": "partial",
+      "ground_truth_status": "verified",
+      "notes": "หน้า 76 มีตัวอย่าง TT และ Tt ส่วนหน้า 78 มีเนื้อหาจำลองการถ่ายทอดลักษณะและอัตราส่วน Ground Truth verified: page 76 directly explains TT and Tt as tall and tt as short; page 78 supports the genotype combinations and phenotype ratio."
+    },
+    {
+      "id": "Q04",
+      "topic": "Dominant allele",
+      "main_question": "แอลลีลเด่นมีผลต่อการแสดงลักษณะทางพันธุกรรมอย่างไร",
+      "queries": [
+        "แอลลีลเด่นมีผลต่อการแสดงลักษณะทางพันธุกรรมอย่างไร",
+        "แอลลีลเด่นข่มแอลลีลด้อย",
+        "ลักษณะเด่นแสดงออกในสิ่งมีชีวิตที่มีแอลลีลต่างกัน"
+      ],
+      "gold_pages": [
+        76,
+        77
+      ],
+      "candidate_pages": [
+        76
+      ],
+      "observed_rrf_top3": [
+        60,
+        76,
+        13
+      ],
+      "previous_assessment": "good",
+      "ground_truth_status": "verified",
+      "notes": "หน้า 76 มีตัวอย่างแอลลีลเด่น T และแอลลีลด้อย t Ground Truth verified: page 76 directly explains dominant and recessive alleles and complete dominance; page 77 provides supporting examples and clarifies that dominant traits are not necessarily more common."
+    },
+    {
+      "id": "Q05",
+      "topic": "Gene and allele",
+      "main_question": "ยีนและแอลลีลมีความสัมพันธ์กันอย่างไร",
+      "queries": [
+        "ยีนและแอลลีลมีความสัมพันธ์กันอย่างไร"
+      ],
+      "gold_pages": [
+        76,
+        77
+      ],
+      "candidate_pages": [
+        76
+      ],
+      "observed_rrf_top3": [
+        76,
+        13,
+        60
+      ],
+      "previous_assessment": "good",
+      "ground_truth_status": "verified",
+      "notes": "มีบันทึก Query หลัก แต่ Query ย่อยเดิมยังไม่ครบ จึงยังไม่เพิ่มคำค้นที่ไม่ได้ยืนยัน Ground Truth verified: page 76 explains that a gene controls a characteristic and alleles are different forms affecting that characteristic; page 77 explicitly defines genes and alleles and clarifies their relationship."
+    },
+    {
+      "id": "Q06",
+      "topic": "Mendel experiment",
+      "main_question": "เมนเดลใช้ถั่วลันเตาศึกษาการถ่ายทอดลักษณะทางพันธุกรรมอย่างไร",
+      "queries": [
+        "เมนเดลใช้ถั่วลันเตาศึกษาการถ่ายทอดลักษณะทางพันธุกรรมอย่างไร",
+        "การทดลองของเมนเดลกับถั่วลันเตา",
+        "การผสมพันธุ์ถั่วลันเตาและการถ่ายทอดลักษณะ"
+      ],
+      "gold_pages": [
+        74,
+        75
+      ],
+      "candidate_pages": [
+        74,
+        75,
+        78
+      ],
+      "observed_rrf_top3": [
+        134,
+        74,
+        13
+      ],
+      "previous_assessment": "partial",
+      "ground_truth_status": "verified",
+      "notes": "หน้า 74 และ 75 มีเนื้อหาการทดลองของเมนเดล ส่วนหน้า 78 มีการจำลองการถ่ายทอดลักษณะ Ground Truth verified: page 74 explains Mendel's pea selection and cross-pollination methods; page 75 explains experimental results, dominant and recessive traits, and the approximate 3:1 ratio. Page 78 is an allele-pairing simulation activity, not the direct Mendel experiment explanation."
+    },
+    {
+      "id": "Q07",
+      "topic": "Earlobe inheritance",
+      "main_question": "พ่อแม่ที่มีติ่งหูทั้งคู่สามารถมีลูกไม่มีติ่งหูได้หรือไม่",
+      "queries": [
+        "พ่อแม่ที่มีติ่งหูทั้งคู่สามารถมีลูกไม่มีติ่งหูได้หรือไม่",
+        "การถ่ายทอดลักษณะการมีติ่งหูและไม่มีติ่งหู",
+        "แอลลีล E และ e ลักษณะติ่งหู"
+      ],
+      "gold_pages": [
+        130
+      ],
+      "candidate_pages": [
+        130
+      ],
+      "observed_rrf_top3": [
+        130,
+        110,
+        104
+      ],
+      "previous_assessment": "good",
+      "ground_truth_status": "verified",
+      "notes": "หน้า 130 มีตัวอย่างการถ่ายทอดลักษณะติ่งหู โดย E เป็นแอลลีลเด่นสำหรับการมีติ่งหู และ e เป็นแอลลีลด้อยสำหรับการไม่มีติ่งหู ต้องตรวจเนื้อหาเต็มก่อนกำหนดเป็น Ground Truth Ground Truth verified: page 130 directly presents the earlobe inheritance question, defines E as the dominant allele for attached earlobes and e as the recessive allele for no earlobes, and explains that Ee x Ee parents can have a child with genotype ee."
+    },
+    {
+      "id": "Q08",
+      "topic": "Refraction of light",
+      "main_question": "แสงเกิดการหักเหเมื่อเดินทางผ่านตัวกลางต่างชนิดกันได้อย่างไร",
+      "queries": [
+        "แสงเกิดการหักเหเมื่อเดินทางผ่านตัวกลางต่างชนิดกันได้อย่างไร",
+        "การหักเหของแสงเมื่อผ่านตัวกลาง",
+        "รังสีตกกระทบและรังสีหักเห"
+      ],
+      "gold_pages": [
+        181,
+        182,
+        233
+      ],
+      "candidate_pages": [
+        182,
+        233,
+        278
+      ],
+      "observed_rrf_top3": [
+        21,
+        278,
+        20
+      ],
+      "previous_assessment": "problematic",
+      "ground_truth_status": "verified",
+      "notes": "หน้า 233 มีคำอธิบายการหักเหทั่วไป หน้า 182 อธิบายรังสีตกกระทบและรังสีหักเห ส่วนหน้า 278 เน้นการหักเหผ่านปริซึม Ground Truth verified: page 181 explains refraction at the boundary between different transparent media; page 182 explains bending toward or away from the normal according to light speed in each medium; page 233 provides a direct summary of refraction and its effects."
+    },
+    {
+      "id": "Q09",
+      "topic": "Plane mirror",
+      "main_question": "ภาพที่เกิดจากกระจกเงาราบมีลักษณะอย่างไร",
+      "queries": [
+        "ภาพที่เกิดจากกระจกเงาราบมีลักษณะอย่างไร",
+        "สมบัติของภาพจากกระจกเงาราบ",
+        "การสะท้อนของแสงจากกระจกเงาราบ"
+      ],
+      "gold_pages": [
+        195,
+        196
+      ],
+      "candidate_pages": [
+        275,
+        194
+      ],
+      "observed_rrf_top3": [
+        275,
+        276,
+        247
+      ],
+      "previous_assessment": "problematic",
+      "ground_truth_status": "verified",
+      "notes": "หน้า 275 มีข้อความเรื่องขนาดภาพและระยะภาพของกระจกเงาราบ แต่ต้องตรวจเนื้อหาเต็มว่าตอบคุณสมบัติครบหรือไม่"
+    },
+    {
+      "id": "Q10",
+      "topic": "Genetically modified organisms",
+      "main_question": "สิ่งมีชีวิตดัดแปรพันธุกรรมคืออะไร",
+      "queries": [
+        "สิ่งมีชีวิตดัดแปรพันธุกรรมคืออะไร",
+        "การสร้างสิ่งมีชีวิตดัดแปรพันธุกรรม",
+        "การเปลี่ยนแปลงสารพันธุกรรมของสิ่งมีชีวิต"
+      ],
+      "gold_pages": [
+        63
+      ],
+      "candidate_pages": [
+        63
+      ],
+      "observed_rrf_top3": [
+        60,
+        63,
+        81
+      ],
+      "previous_assessment": "problematic",
+      "ground_truth_status": "verified",
+      "notes": "หน้า 63 มีคำอธิบายการใช้พันธุวิศวกรรมเพื่อเปลี่ยนแปลงพันธุกรรมให้ได้ลักษณะตามต้องการ"
+    }
+  ]
+}

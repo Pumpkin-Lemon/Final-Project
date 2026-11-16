@@ -1,0 +1,2 @@
+﻿(()=>{const snippets={app:'FastAPI application entry point',pdf_rag:'ChromaDB retrieval and PDF indexing services',graphrag:'Ollama grounded response service'};let key='app';window.switchCodeFile=k=>{key=snippets[k]?k:'app';const el=document.getElementById('code-display');if(el)el.textContent=snippets[key];};window.copyCodeSnippet=async()=>{try{await navigator.clipboard.writeText(snippets[key]);document.getElementById('copy-btn-text').textContent='Copied!';}catch(e){alert('เธเธฑเธ”เธฅเธญเธเนเธกเนเนเธ”เน');}};})();
+
