@@ -1,451 +1,454 @@
-# SciTutor-Workbench
+# SciTutor Workbench
 
-AI Science Tutor สำหรับวิทยาศาสตร์ระดับชั้นมัธยมศึกษาปีที่ 3 โดยใช้แนวทาง **Retrieval-Augmented Generation (RAG)** เพื่อค้นหาเนื้อหาจากเอกสารประกอบการเรียน แล้วนำบริบทที่ค้นพบมาใช้สร้างคำอธิบายสำหรับผู้เรียน
+SciTutor Workbench เป็นเว็บแอปพลิเคชันสำหรับช่วยอธิบายและแก้โจทย์วิทยาศาสตร์ระดับชั้นมัธยมศึกษาปีที่ 3 โดยใช้เทคนิค Retrieval-Augmented Generation (RAG) เพื่อค้นหาข้อมูลจากเอกสาร PDF ที่จัดเก็บไว้ในฐานข้อมูลก่อนนำบริบทที่เกี่ยวข้องไปประกอบการสร้างคำตอบด้วย Ollama
 
-โปรเจกต์นี้พัฒนาด้วย Python, FastAPI, ChromaDB และ Ollama โดยแยก Frontend และ Backend ออกจากกัน
+ระบบประกอบด้วย Frontend สำหรับรับโจทย์และแสดงผล Backend ที่พัฒนาด้วย FastAPI ระบบค้นคืนข้อมูลจาก ChromaDB และโมเดลภาษาที่ทำงานผ่าน Ollama
 
-> **สถานะโครงการ:** ระบบอยู่ระหว่างการพัฒนาและทดสอบ ยังไม่ควรถือว่าคำตอบจาก AI ถูกต้องเสมอหรือพร้อมใช้งานในระบบการเรียนการสอนจริง
+ผลลัพธ์ประกอบด้วยคำอธิบาย ตัวแปรที่เกี่ยวข้อง คำถามชวนคิด ขั้นตอนการแก้โจทย์ และข้อมูลอ้างอิงจากเอกสาร PDF
 
----
+## Features
 
-## 1. Project Overview
+- **AI-powered Science Tutoring:** ช่วยอธิบายโจทย์วิทยาศาสตร์เป็นภาษาไทย เหมาะสำหรับนักเรียนระดับ ม.3
+- **PDF-based RAG:** ค้นคืนเนื้อหาจากเอกสาร PDF ที่จัดเก็บใน ChromaDB
+- **Multilingual Embedding:** ใช้ Sentence Transformers รุ่น `paraphrase-multilingual-MiniLM-L12-v2` สำหรับสร้าง Embeddings
+- **LLM Integration:** ใช้ Ollama ร่วมกับโมเดล `qwen3:4b` เพื่อสร้างคำตอบ
+- **Structured Responses:** ส่งผลลัพธ์ในรูปแบบ JSON ตาม Response Contract
+- **Image Preview:** รองรับการเลือกรูปภาพและแสดงตัวอย่างก่อนส่งคำถาม แต่ยังไม่มีระบบ OCR ผู้ใช้ต้องพิมพ์โจทย์เป็นข้อความ
+- **PDF Indexing:** ผู้ดูแลระบบสามารถอัปโหลดและจัดทำดัชนีเอกสาร PDF ผ่าน Backend API โดยไม่มีฟังก์ชันอัปโหลด PDF สำหรับผู้ใช้ทั่วไป
+- **Source Citations:** แสดงชื่อไฟล์และเลขหน้าจาก Metadata ของเอกสารที่ค้นคืนได้
+- **Survey Feedback:** บันทึกและสรุปผลการประเมินจากผู้ใช้งาน
 
-SciTutor-Workbench มีเป้าหมายเพื่อช่วยผู้เรียนทำความเข้าใจโจทย์วิทยาศาสตร์ โดยใช้ข้อมูลจากเอกสารที่ทีมจัดเตรียมไว้เป็นแหล่งอ้างอิง
+## System Architecture
 
-ลำดับการทำงานโดยสรุป:
+SciTutor Workbench ใช้สถาปัตยกรรม Client–Server โดยแบ่งการทำงานออกเป็นส่วนต่าง ๆ ดังนี้
 
-1. ผู้เรียนส่งคำถามผ่านหน้าเว็บ
-2. Backend รับคำถามผ่าน FastAPI
-3. ระบบค้นหาข้อความที่เกี่ยวข้องจาก ChromaDB
-4. นำ Context ที่ค้นพบส่งให้ Ollama
-5. Ollama สร้างคำอธิบายตามรูปแบบ Response Contract
-6. Backend ส่งคำตอบและ Citation กลับไปยัง Frontend
+1. **Frontend:** รับคำถาม แสดงผลการวิเคราะห์ ขั้นตอนการแก้โจทย์ และข้อมูลอ้างอิง โดยทำงานจากหน้าเว็บที่ FastAPI เสิร์ฟ
+2. **FastAPI Backend:** เสิร์ฟ Frontend และรับคำขอ API เพื่อประมวลผลคำถาม จัดการเอกสาร PDF และข้อมูลแบบประเมิน
+3. **RAG Service:** สร้าง Query Embedding และค้นคืนเนื้อหาที่เกี่ยวข้องจาก ChromaDB
+4. **ChromaDB:** จัดเก็บข้อมูลเอกสารและ Metadata สำหรับการค้นคืน
+5. **Ollama:** รับคำถามและบริบทจาก PDF เพื่อสร้างคำตอบในรูปแบบ JSON
 
-## 2. Technology Stack
-
-| Component | Technology |
-|---|---|
-| Frontend | HTML, CSS, JavaScript |
-| Backend | Python, FastAPI |
-| Vector Database | ChromaDB |
-| Embedding | sentence-transformers |
-| Embedding Model | paraphrase-multilingual-MiniLM-L12-v2 |
-| LLM Runtime | Ollama |
-| Current LLM | qwen3:4b |
-| PDF Processing | PyMuPDF |
-| API Validation | Pydantic |
-
-## 3. System Architecture
+### Processing Flow
 
 ```text
-             Student
-                |
-                v
-        Frontend (Browser)
-                |
-                v
-          FastAPI Backend
-                |
-                v
-       ChromaDB Retrieval
-                |
-                v
-        Retrieved Context
-                |
-                v
-          Ollama (LLM)
-                |
-                v
-       Structured JSON Response
-                |
-                v
-        Frontend Rendering
+Browser → FastAPI → ChromaDB Retrieval → Ollama → JSON Response → Browser
 ```
 
-**Important:** PDF หนังสือเรียนเป็นข้อมูลที่ผู้ดูแลระบบเตรียมและนำเข้า Knowledge Base ไม่ใช่ไฟล์ที่ผู้เรียนต้องอัปโหลดทุกครั้งที่ถามคำถาม
+API และการเชื่อมต่อกับ Ollama ทำงานผ่าน Backend โดย Frontend ไม่จำเป็นต้องเชื่อมต่อ Ollama โดยตรง
 
-## 4. Repository Structure
+## Technology Stack
+
+### Backend
+- Python
+- FastAPI
+- Uvicorn
+- Pydantic
+- ChromaDB
+- Sentence Transformers
+- PyMuPDF
+
+### AI / Machine Learning
+- Ollama
+- `qwen3:4b`
+- `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
+
+### Frontend
+- HTML
+- CSS
+- JavaScript
+
+### Development and Testing
+- Pytest
+- HTTPX
+- Python Virtual Environment
+
+## Project Structure
 
 ```text
-SciTutor-Workbench/
-│
+SciTutor-Workbench02/
 ├── backend/
 │   ├── api/
-│   │   ├── __init__.py
 │   │   └── routes.py
 │   ├── core/
+│   │   └── config.py
 │   ├── models/
+│   │   └── schemas.py
 │   ├── services/
+│   │   ├── ollama_service.py
+│   │   ├── pdf_service.py
+│   │   ├── rag_service.py
+│   │   └── survey_service.py
 │   ├── utils/
-│   ├── __init__.py
-│   ├── main.py
-│   └── init_db_from_pdf.py
-│
+│   │   └── text_chunker.py
+│   ├── init_db_from_pdf.py
+│   └── main.py
 ├── frontend/
-│   ├── index.html
+│   ├── assets/
+│   │   ├── icons/
+│   │   └── images/
 │   ├── css/
-│   └── js/
-│
+│   │   └── styles.css
+│   ├── js/
+│   │   ├── api.js
+│   │   ├── app.js
+│   │   ├── code-viewer.js
+│   │   ├── config.js
+│   │   ├── pdf-manager.js
+│   │   ├── solver.js
+│   │   ├── survey.js
+│   │   └── theme.js
+│   └── index.html
 ├── data/
-│   ├── evaluation/
-│   ├── ipst_pdfs/
-│   ├── processed/
-│   └── uploads/
-│
+│   └── (runtime data and uploaded PDFs)
 ├── docs/
 │   ├── api-guide.md
 │   ├── architecture.md
 │   └── migration-notes.md
-│
 ├── tests/
-│
-├── requirements.txt
+│   ├── test_api.py
+│   └── test_utils.py
 ├── .env.example
 ├── .gitignore
+├── cleanup_gemini_to_ollama.ps1
+├── index.html
+├── rebuild_multilingual_db
+├── rebuild_multilingual_db.py
+├── requirements.txt
+├── start_scitutor.ps1
+├── test_multilingual_search.py
 └── README.md
 ```
 
 หมายเหตุ:
+- `.env`, `.venv`, `vector_db`, `.git`, cache และไฟล์สำรองไม่แสดงในโครงสร้างนี้
+- `data/` ใช้เป็นพื้นที่เก็บข้อมูลที่ระบบสร้างหรือใช้งานระหว่างการทำงาน
+- โครงสร้างนี้แสดงไฟล์ Source Code และเอกสารหลัก ไม่รวมไฟล์สำรองหรือข้อมูล Runtime
 
-- `vector_db/` เป็นฐานข้อมูล ChromaDB เฉพาะเครื่อง จึงไม่ควร Commit
-- `data/uploads/` ใช้เก็บ PDF ในเครื่อง ไม่ส่งไฟล์ PDF จริงขึ้น GitHub
-- `data/processed/` เป็นข้อมูลที่สร้างขึ้นระหว่างประมวลผล
-- `data/evaluation/` เป็นชุดข้อมูลทดสอบที่ต้องตรวจสอบก่อนเผยแพร่
-- โครงสร้างย่อยอาจแตกต่างจากตัวอย่างตามไฟล์จริงในแต่ละเวอร์ชัน
+## Installation and Setup
 
-## 5. Requirements
+### 1. Clone the Repository
 
-ก่อนเริ่มติดตั้ง ควรเตรียม:
-
-- Python 3.14.7 (มาตรฐานชั่วคราวของทีม ซึ่งผ่านการทดสอบ Fresh Clone บน Windows เมื่อ 16 พฤศจิกายน 2026)
-- Git
-- Ollama
-- พื้นที่ดิสก์สำหรับ Model Cache และ ChromaDB
-- PDF หนังสือเรียนที่ทีมมีสิทธิ์ใช้งาน
-
-Dependency หลักอยู่ใน `requirements.txt`
-
-**ผลการทดสอบ Dependency:** `requirements.txt` มี `sentence-transformers` อยู่แล้ว และการติดตั้ง Dependency ทั้งหมดผ่านในการทดสอบ Fresh Clone ด้วย Python 3.14.7 โดย `pip check` ไม่พบ Dependency ที่ขัดแย้งกัน
-
-## 6. Local Development Setup
-
-สมาชิกแต่ละคนสามารถ Clone Repository และรันระบบบนเครื่องของตัวเองได้
-
-### 6.1 Clone Repository
-
-```bash
-git clone <REPOSITORY_URL>
-cd SciTutor-Workbench
+```powershell
+git clone <repository-url>
+cd SciTutor-Workbench02
 ```
 
-แทนที่ `<REPOSITORY_URL>` ด้วย URL จริงของ Repository ทีม
-
-### 6.2 Create Virtual Environment
-
-**Windows PowerShell**
+### 2. Create a Virtual Environment
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python --version
 ```
 
-**macOS / Linux**
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-### 6.3 Install Dependencies
-
-```bash
-python -m pip install -r requirements.txt
-python -m pip check
-```
-
-**ผลการทดสอบ:** คำสั่งติดตั้ง Dependency และ `pip check` ผ่านในการทดสอบ Fresh Clone ด้วย Python 3.14.7 บน Windows เมื่อ 16 พฤศจิกายน 2026 ทั้งนี้ยังไม่ได้ยืนยันความเข้ากันได้กับ Python เวอร์ชันอื่นหรือระบบปฏิบัติการอื่น
-
-### 6.4 Configure Environment
-
-สร้าง `.env` จาก `.env.example`
-
-Windows:
+### 3. Activate the Virtual Environment
 
 ```powershell
-Copy-Item .env.example .env
+.\.venv\Scripts\Activate.ps1
 ```
 
-macOS / Linux:
+### 4. Install Dependencies
 
-```bash
-cp .env.example .env
+```powershell
+pip install -r requirements.txt
 ```
 
-ตรวจสอบค่าใน `.env` ให้ตรงกับเครื่องที่ใช้งาน โดยเฉพาะ:
+### 5. Configure Environment Variables
 
-- `CHROMA_DB_PATH`
-- `CHROMA_COLLECTION`
-- `FRONTEND_ORIGINS`
-- `MAX_UPLOAD_MB`
+สร้างไฟล์ `.env` จาก `.env.example` และกำหนดค่าตามสภาพแวดล้อมของเครื่อง
 
-ห้าม Commit `.env` หรือส่งค่าความลับผ่าน GitHub
+### 6. Start Ollama
 
-### 6.5 Prepare Ollama
+ติดตั้งและเปิด Ollama พร้อมตรวจสอบว่ามีโมเดล `qwen3:4b` พร้อมใช้งาน
 
-ติดตั้ง Ollama และเตรียมโมเดลที่ Backend ใช้งาน
-
-โมเดลปัจจุบันที่ใช้ทดสอบคือ:
-
-```bash
+```powershell
 ollama pull qwen3:4b
 ```
 
-ตรวจสอบโมเดลที่ติดตั้ง:
+### 7. Prepare the ChromaDB Collection
 
-```bash
-ollama list
+หากต้องการสร้างฐานข้อมูลจากเอกสาร PDF ให้ดำเนินการดังนี้:
+
+1. สร้างโฟลเดอร์ `data/uploads/` หากยังไม่มี
+2. นำไฟล์ PDF ที่ต้องการจัดทำดัชนีใส่ไว้ในโฟลเดอร์ดังกล่าว
+3. ตรวจสอบว่า `CHROMA_COLLECTION` ในไฟล์ `.env` เป็น `grade9_science_textbooks_multilingual`
+4. รันคำสั่ง:
+
+```powershell
+New-Item -ItemType Directory -Force .\data\uploads
+& ".\.venv\Scripts\python.exe" rebuild_multilingual_db.py
 ```
 
-ต้องแน่ใจว่า Ollama ทำงานอยู่ก่อนส่งคำถามจาก Frontend
+สคริปต์จะอ่านข้อความจาก PDF สร้าง Embeddings และบันทึกข้อมูลลง ChromaDB โดยใช้ Multilingual Embedding Model ซึ่งอาจต้องดาวน์โหลดโมเดลในครั้งแรก
 
-### 6.6 Prepare Embedding Model
+หากยังไม่มีไฟล์ PDF สามารถข้ามขั้นตอนนี้ได้ แต่ระบบจะยังไม่มีข้อมูลเอกสารสำหรับค้นคืนจนกว่าจะมีการจัดทำดัชนี
 
-Embedding Model:
+### 8. Start the Backend
+
+```powershell
+& ".\.venv\Scripts\python.exe" -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+เปิดเว็บเบราว์เซอร์ที่:
 
 ```text
-sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+http://127.0.0.1:8000/
 ```
 
-โมเดลนี้จะถูกดาวน์โหลดและเก็บใน Model Cache ของแต่ละเครื่องเมื่อมีการโหลดใช้งาน
-
-สมาชิกไม่จำเป็นต้องนำ Model Weights เข้า Git Repository
-
-### 6.7 Prepare Knowledge Base
-
-Knowledge Base ประกอบด้วย PDF และข้อมูล Embeddings ใน ChromaDB
-
-**ข้อสำคัญ:** ห้ามรัน `rebuild_multilingual_db.py` หรือสคริปต์สร้างฐานข้อมูลอื่นโดยไม่ตรวจสอบก่อนว่าสคริปต์ใช้ PDF ชุดใด, ChromaDB path ใด และ Collection ชื่อใด
-
-สคริปต์ `rebuild_multilingual_db.py` ที่ตรวจพบใน Repository กำหนด Collection ชื่อ `grade9_science_textbooks_multilingual` ไว้ภายใน ขณะที่ฐานข้อมูลที่ระบบปัจจุบันใช้งานคือ `grade9_science_textbooks_combined`
-
-ดังนั้นควรใช้ Knowledge Base ที่ผู้ดูแลจัดเตรียมและยืนยันแล้ว จนกว่าจะมีขั้นตอนสร้างฐานข้อมูลฉบับมาตรฐานของทีม
-
-ห้ามนำ ChromaDB ของสมาชิกคนหนึ่งไปเขียนทับฐานข้อมูลของสมาชิกอีกคนหรือเครื่อง Demo โดยไม่มีกระบวนการสำรองและตรวจสอบ
-
-## 7. Run the Application
-
-เปิด Terminal แยกกัน 2 หน้าต่าง
-
-### Terminal 1: Backend
-
-เปิด Virtual Environment แล้วรัน:
-
-```bash
-python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
-```
-
-ตรวจสอบ Health:
+ตรวจสอบสถานะ Backend:
 
 ```text
 http://127.0.0.1:8000/health
 ```
 
-API Documentation:
+## Environment Configuration
+
+SciTutor Workbench ใช้ไฟล์ `.env` สำหรับกำหนดค่าการทำงานของ Backend
+
+ตัวอย่างค่าที่ใช้:
+
+```env
+CHROMA_DB_PATH=vector_db
+CHROMA_COLLECTION=grade9_science_textbooks_multilingual
+FRONTEND_ORIGINS=http://127.0.0.1:5500,http://localhost:5500,http://localhost:63342
+MAX_UPLOAD_MB=250
+```
+
+### Configuration Details
+
+| Variable | Description |
+|---|---|
+| `CHROMA_DB_PATH` | ตำแหน่งจัดเก็บฐานข้อมูล ChromaDB |
+| `CHROMA_COLLECTION` | ชื่อ Collection ที่ใช้ค้นคืนข้อมูล |
+| `FRONTEND_ORIGINS` | รายการ Origin ที่อนุญาตให้เรียก Backend |
+| `MAX_UPLOAD_MB` | ขนาดไฟล์ PDF สูงสุดที่อนุญาตให้อัปโหลด หน่วย MB |
+
+ค่าเริ่มต้นของขนาดไฟล์ PDF คือ 250 MB สามารถเปลี่ยนแปลงได้ผ่าน `MAX_UPLOAD_MB` และต้อง Restart Backend เพื่อให้โหลดค่าใหม่
+
+เมื่อ Frontend ถูกเสิร์ฟจาก FastAPI ใน Origin เดียวกัน การกำหนด `FRONTEND_ORIGINS` สำหรับ Frontend ที่แยก Server ออกจาก Backend จะจำเป็นเฉพาะกรณีที่ใช้งานแยก Origin เท่านั้น
+
+## API Endpoints
+
+Base API Prefix:
 
 ```text
-http://127.0.0.1:8000/docs
+/api/v3
 ```
 
-### Terminal 2: Frontend
-
-```bash
-python -m http.server 5500 --directory frontend
-```
-
-เปิด Browser:
-
-```text
-http://127.0.0.1:5500
-```
-
-หากเกิด CORS Error ให้ตรวจสอบ `FRONTEND_ORIGINS` ใน `.env` ให้ตรงกับ URL ที่เปิด Frontend
-
-## 8. API Endpoints
-
-Endpoint หลักที่ใช้ในระบบ:
-
-| Method | Endpoint | Purpose |
+| Method | Endpoint | Description |
 |---|---|---|
 | GET | `/health` | ตรวจสอบสถานะ Backend |
-| POST | `/api/v3/analyze-with-pdf-rag` | วิเคราะห์โจทย์ด้วย RAG |
-| POST | `/api/v3/index-pdf` | จัดทำดัชนี PDF |
-| POST | `/api/v3/survey` | บันทึก Feedback |
-| GET | `/api/v3/survey/summary` | ดูสรุป Feedback |
+| POST | `/api/v3/analyze-with-pdf-rag` | วิเคราะห์โจทย์ด้วย PDF-based RAG |
+| POST | `/api/v3/index-pdf` | อัปโหลดและจัดทำดัชนีเอกสาร PDF |
+| POST | `/api/v3/survey` | บันทึกผลประเมินจากผู้ใช้ |
+| GET | `/api/v3/survey/summary` | ดึงข้อมูลสรุปผลประเมิน |
 
-รายละเอียด Request และ Response ให้ยึด `docs/api-guide.md` และ Schema ใน Backend เป็นหลัก
+### Analyze with PDF RAG
 
-## 9. Response Contract
+Endpoint:
 
-ผลลัพธ์หลักจาก AI ต้องมีโครงสร้าง:
+```http
+POST /api/v3/analyze-with-pdf-rag
+```
 
-| Field | Type | Description |
-|---|---|---|
-| `answer` | string | คำอธิบายคำตอบ |
-| `vars` | array | ตัวแปรและค่าที่เกี่ยวข้อง |
-| `socraticCards` | array | คำถามชวนคิด คำใบ้ และจุดตรวจความเข้าใจ |
-| `steps` | array | ลำดับขั้นตอนการแก้โจทย์ |
-| `pdfRef` | string | ข้อมูลอ้างอิง PDF |
+Request:
 
-API Response เพิ่ม:
+```json
+{
+  "question": "โจทย์วิทยาศาสตร์ที่ต้องการให้ช่วยอธิบาย"
+}
+```
 
-- `status`
-- `citations`
+Response Structure:
 
-โดย `citations` ต้องมาจากข้อมูล Retrieval ของ Backend ไม่ใช่ให้ LLM สร้างขึ้นเอง
+```json
+{
+  "status": "success",
+  "answer": "คำอธิบาย",
+  "vars": [
+    {
+      "name": "V",
+      "val": "12 โวลต์"
+    }
+  ],
+  "socraticCards": [
+    {
+      "question": "โจทย์นี้ต้องใช้หลักการใด?",
+      "hint": "พิจารณาความสัมพันธ์ของตัวแปร",
+      "checkpoint": "สามารถอธิบายเหตุผลได้หรือไม่?"
+    }
+  ],
+  "steps": [
+    {
+      "title": "ขั้นที่ 1",
+      "detail": "ระบุข้อมูลที่โจทย์กำหนด"
+    }
+  ],
+  "pdfRef": "หน้า 12",
+  "citations": [
+    {
+      "source_file": "textbook.pdf",
+      "page": 12
+    }
+  ]
+}
+```
 
-## 10. Central Demo Deployment
+ตัวอย่างข้างต้นเป็นตัวอย่างโครงสร้าง ไม่ใช่ผลลัพธ์จากการเรียก API จริง
 
-เครื่อง Central Demo เป็นสภาพแวดล้อมแยกจาก Local Development
+### Response Contract
 
-สิ่งที่เครื่องกลางต้องมี:
+โมเดลสร้างผลลัพธ์ตาม Response Contract ซึ่งประกอบด้วย 5 ฟิลด์หลัก:
 
-- Source Code จาก Branch `main` หรือ Release ที่ทีมอนุมัติ
-- Python Environment ของเครื่องกลาง
-- Ollama และ LLM Model
-- Embedding Model Cache
-- ChromaDB ของเครื่องกลาง
-- PDF ที่ทีมมีสิทธิ์ใช้
-- `.env` สำหรับเครื่องกลางโดยเฉพาะ
+| Field | Type |
+|---|---|
+| `answer` | String |
+| `vars` | Array of `{name, val}` |
+| `socraticCards` | Array of `{question, hint, checkpoint}` |
+| `steps` | Array of `{title, detail}` |
+| `pdfRef` | String |
 
-**ข้อกำหนดสำคัญ**
+ส่วน API Response จะเพิ่ม `status` และ `citations` เข้ามาอีก 2 ฟิลด์
 
-1. เครื่อง Demo ต้องมี `.env` ของตัวเอง
-2. ห้ามใช้ ChromaDB ร่วมกับเครื่องสมาชิกผ่านการคัดลอกไฟล์ฐานข้อมูลไปมา
-3. ห้ามให้เครื่อง Demo ดึง Feature Branch ที่ยังไม่ผ่าน Review
-4. การอัปเดต Demo ต้องผ่านการตรวจสอบและอนุมัติจากทีม
-5. ก่อนอัปเดตระบบควรสำรองฐานข้อมูลและตรวจสอบเวอร์ชัน
-6. ไม่ควรเปิด API สำหรับ Index PDF ให้ผู้ใช้งานทั่วไปเข้าถึง
+Array แต่ละรายการสามารถเป็น `[]` ได้เมื่อไม่มีข้อมูลที่จำเป็นต้องแสดง
 
-### สถานะการรองรับผู้ใช้ผ่านเครือข่าย LAN
+### PDF Indexing
 
-**สถานะปัจจุบัน: ยังไม่พร้อมสำหรับการใช้งานหลายเครื่องผ่าน LAN โดยอัตโนมัติ**
+Endpoint:
 
-- Frontend ใน `frontend/js/config.js` กำหนด API Base URL เป็น `http://127.0.0.1:8000`
-- คำสั่ง Backend ในขั้นตอน Local Development ใช้ `127.0.0.1` ซึ่งรับการเชื่อมต่อเฉพาะเครื่องที่รัน Backend
-- เมื่อผู้เรียนเปิด Frontend จากคอมพิวเตอร์ของตนเอง `127.0.0.1` จะหมายถึงคอมพิวเตอร์ของผู้เรียน ไม่ใช่เครื่อง Central Demo
+```http
+POST /api/v3/index-pdf
+```
 
-การรองรับ LAN ต้องปรับการตั้งค่า Backend ให้รับการเชื่อมต่อจากเครือข่าย ปรับวิธีระบุ API URL ของ Frontend และกำหนด CORS ให้ครอบคลุม Origin ของ Frontend ที่ใช้งานจริง รวมถึงตั้งค่า Firewall ให้เหมาะสมและปลอดภัย
+ใช้ `multipart/form-data` โดยส่งไฟล์ PDF ผ่านช่อง `file`
 
-**อย่าถือว่าระบบรองรับ LAN แล้ว** จนกว่าจะมีการปรับปรุงและทดสอบการเชื่อมต่อจากเครื่องผู้เรียนหลายเครื่องจริง
+Endpoint นี้เป็น Backend API สำหรับงานจัดการเอกสารและการพัฒนาระบบ ไม่ใช่ฟังก์ชันอัปโหลด PDF บนหน้าเว็บสำหรับผู้ใช้ทั่วไป ทั้งนี้ Endpoint ยังไม่มีระบบ Authentication หรือ Authorization ในตัว จึงต้องจำกัดการเข้าถึงด้วยมาตรการระดับเครือข่าย
 
-## 11. Team Git Workflow
+ระบบตรวจสอบนามสกุลไฟล์ รูปแบบไฟล์ และขนาดไฟล์ก่อนดำเนินการจัดทำดัชนี
 
-แนะนำให้ใช้ Branch แยกตามงาน:
+### Survey
+
+บันทึกคะแนน 3 รายการ:
+
+- `rating_ocr`
+- `rating_socratic`
+- `rating_overall`
+
+แต่ละรายการต้องมีค่าตั้งแต่ 1 ถึง 5
+
+## PDF Processing and Retrieval-Augmented Generation
+
+### PDF Upload
+
+ระบบรองรับการอัปโหลดเอกสาร PDF ผ่าน Backend API สำหรับผู้ดูแลระบบ โดยมีรายละเอียดดังนี้:
+
+- รองรับไฟล์ PDF สูงสุด 250 MB โดยค่าเริ่มต้น
+- สามารถกำหนดขนาดสูงสุดผ่าน `MAX_UPLOAD_MB`
+- อ่านไฟล์เป็นส่วนขนาด 1 MB ระหว่างการบันทึก
+- ตรวจสอบลายเซ็นไฟล์ PDF ก่อนนำไปประมวลผล
+- จัดทำดัชนีเอกสารและจัดเก็บข้อมูลลง ChromaDB
+
+การจัดทำดัชนีเอกสารขนาดใหญ่ยังต้องใช้เวลา หน่วยความจำ และพื้นที่ดิสก์ตามปริมาณข้อมูล
+
+### Retrieval Process
+
+ระบบใช้ Sentence Transformers รุ่น:
 
 ```text
-main
- |
- +-- feature/frontend
- |
- +-- feature/backend
- |
- +-- feature/rag
- |
- +-- fix/bug-description
+sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 ```
 
-แนวทางการทำงาน:
+สำหรับสร้าง Query Embedding และใช้ ChromaDB ในการค้นคืนข้อมูล
 
-1. สมาชิกสร้าง Feature Branch จาก `main`
-2. พัฒนาและทดสอบในเครื่องตัวเอง
-3. Commit เฉพาะ Source Code และไฟล์ที่ทีมอนุมัติให้แชร์
-4. Push Branch ขึ้น GitHub
-5. เปิด Pull Request
-6. สมาชิกในทีม Review
-7. Merge เมื่อผ่านการตรวจสอบ
-8. เครื่อง Demo อัปเดตจาก `main` หรือ Release ที่อนุมัติแล้วเท่านั้น
+ค่าเริ่มต้นของการค้นคืนคือ 4 รายการ (`top_k=4`)
 
-## 12. Data and Security Policy
+ข้อมูลที่ค้นคืนประกอบด้วย:
 
-**ห้าม Commit ไฟล์ต่อไปนี้**
+- ข้อความจากเอกสาร (`text`)
+- ชื่อไฟล์ต้นทาง (`source_file`)
+- เลขหน้า (`page`)
+- Distance Score (`distance`)
 
-- `.env` และข้อมูลลับ
-- PDF หนังสือเรียนที่ไม่ได้รับอนุญาตให้เผยแพร่
-- ChromaDB และฐานข้อมูลจริง
-- Model Weights
-- Model Cache
-- `.venv/`
-- Log หรือข้อมูล Feedback ที่มีข้อมูลส่วนบุคคล
-- Backup ที่อาจมีข้อมูลเดิมหรือข้อมูลลับ
+### Answer Generation
 
-ก่อน Commit ทุกครั้งควรตรวจสอบ:
+ระบบส่งคำถามและบริบทจากเอกสารที่ค้นคืนได้ไปยัง Ollama โดยใช้โมเดล:
 
-```bash
-git status --short
-git diff --cached --stat
+```text
+qwen3:4b
 ```
 
-หากพบไฟล์ที่ไม่ควรเผยแพร่ ให้หยุดและตรวจสอบก่อน Commit
+ผลลัพธ์ถูกตรวจสอบรูปแบบ JSON ด้วย Pydantic ก่อนส่งกลับไปยัง API
 
-## 13. Troubleshooting
+### Source Citations
 
-### Backend ไม่เริ่มทำงาน
+รายการอ้างอิงถูกสร้างจาก Metadata ของเอกสารที่ค้นคืนได้ โดยใช้ชื่อไฟล์และเลขหน้า และตัดรายการที่ซ้ำกันออก
 
-- ตรวจสอบว่าเปิด Virtual Environment แล้ว
-- ตรวจสอบ Dependency
-- ตรวจสอบ Port 8000
-- ตรวจสอบ Error ใน Terminal
+ฟิลด์ `citations` เก็บชื่อไฟล์และเลขหน้า ส่วน `pdfRef` ถูกสร้างจากเลขหน้าของรายการอ้างอิง หากไม่พบข้อมูลอ้างอิง ระบบจะกำหนด `pdfRef` เป็น `ไม่พบแหล่งอ้างอิง`
 
-### Frontend เรียก Backend ไม่ได้
+## Network Deployment
 
-- ตรวจสอบ Backend Health
-- ตรวจสอบ URL และ Port
-- ตรวจสอบ `FRONTEND_ORIGINS`
-- ตรวจสอบ Browser Console
+SciTutor Workbench สามารถเปิดใช้งานผ่านเครือข่าย Wi-Fi หรือ Mobile Hotspot เพื่อให้ผู้ใช้อุปกรณ์อื่นเข้าถึงเว็บแอปพลิเคชันผ่านเครื่องที่รัน Backend ได้
 
-### Ollama ไม่ตอบคำถาม
+### Start with PowerShell Launcher
 
-- ตรวจสอบว่า Ollama ทำงานอยู่
-- ตรวจสอบผล `ollama list`
-- ตรวจสอบว่าโมเดลที่ Backend เรียกใช้งานติดตั้งแล้ว
-- ตรวจสอบ Log ของ Backend
+เปิด PowerShell ด้วยสิทธิ์ Administrator และไปยังโฟลเดอร์โปรเจกต์ จากนั้นรัน:
 
-### Retrieval ไม่พบข้อมูล
+```powershell
+.\start_scitutor.ps1
+```
 
-- ตรวจสอบ `CHROMA_DB_PATH`
-- ตรวจสอบ `CHROMA_COLLECTION`
-- ตรวจสอบว่ามี Knowledge Base อยู่จริง
-- ตรวจสอบว่า Embedding Model โหลดได้
-- อย่าเพิ่งสร้างฐานข้อมูลใหม่ก่อนตรวจสอบ Collection เดิม
+Launcher จะดำเนินการดังนี้:
 
-## 14. Current Limitations
+1. ตรวจสอบ Python Virtual Environment และไฟล์หลักที่จำเป็น
+2. ตรวจสอบสถานะ Wi-Fi และ IPv4 Address ปัจจุบัน
+3. คำนวณ Subnet จาก Prefix Length ของเครือข่าย
+4. ตรวจสอบ Windows Firewall และ Network Profile
+5. สร้างหรือปรับปรุง Firewall Rule เฉพาะสำหรับ SciTutor
+6. เริ่ม FastAPI บน Wi-Fi IP ปัจจุบันที่ Port 8000
 
-ระบบยังอยู่ในขั้นตอนพัฒนาและตรวจสอบคุณภาพ
+### Access from Other Devices
 
-ประเด็นที่ต้องทดสอบเพิ่มเติม:
+1. เชื่อมต่อคอมพิวเตอร์ที่รัน Backend เข้ากับ Wi-Fi หรือ Hotspot ที่ต้องการใช้
+2. เปิด PowerShell แบบ Administrator
+3. รัน `start_scitutor.ps1`
+4. ตรวจสอบ URL ที่ Launcher แสดง
+5. ให้อุปกรณ์อื่นเชื่อมต่อ Wi-Fi หรือ Hotspot เครือข่ายเดียวกัน
+6. เปิด URL ที่ Launcher แสดงใน Browser
 
-- ความถูกต้องของคำตอบเมื่อ Retrieval พบหลายหัวข้อ
-- ความสัมพันธ์ระหว่าง Context และ Citation
-- ความถูกต้องของหน้า PDF ที่อ้างอิง
-- ความเสถียรของการโหลด Embedding Model
-- การทำงานพร้อมกันของผู้ใช้หลายคน
-- การจัดการ Knowledge Base สำหรับ Local และ Central Demo
+ตัวอย่างรูปแบบ URL:
 
-การที่ API ส่ง JSON ถูก Schema หรือแสดง Citation ได้ ไม่ได้หมายความว่าคำตอบด้านเนื้อหาถูกต้องเสมอไป
+```text
+http://<CURRENT-WIFI-IP>:8000/
+```
 
----
+### Important Notes
 
-## 15. Team Documentation
+- IP Address อาจเปลี่ยนแปลงตามเครือข่ายที่เชื่อมต่อ
+- ต้องรัน Launcher ใหม่เมื่อเปลี่ยนเครือข่ายหรือ IP Address
+- เครื่องที่รัน Backend ต้องเปิดอยู่ตลอดเวลาที่อุปกรณ์อื่นใช้งาน
+- Ollama ต้องทำงานบนเครื่อง Backend
+- Launcher ต้องใช้ PowerShell แบบ Administrator
+- Launcher ตรวจสอบเงื่อนไขของ Wi-Fi และ Network Profile แต่ไม่ได้ตรวจสอบโดยตรงว่าเครือข่ายนั้นเป็น Mobile Hotspot จริงหรือไม่
 
-เอกสารประกอบที่ควรอ่านเพิ่มเติม:
+## Compatibility and API Security Notes
 
-- `docs/api-guide.md` — API Endpoints
-- `docs/architecture.md` — System Architecture
-- `docs/migration-notes.md` — ประวัติการเปลี่ยนแปลงระบบ
+### Python Compatibility and Dependency Check
 
-เอกสารสำหรับการติดตั้งและดูแล Central Demo ควรจัดทำแยกจาก README เมื่อทีมกำหนดขั้นตอน Deployment และ Knowledge Base ที่เป็นมาตรฐานแล้ว
+- Python 3.14.7 is the development and testing version used for this project.
+- The current virtual environment was checked using `pip check`, and no broken requirements were found.
+- Compatibility with other Python versions has not been verified.
+- The dependency check result applies to the current environment and does not guarantee that a fresh installation will work identically.
 
----
+### PDF Indexing API Security
 
-**SciTutor-Workbench — Local Development and Central Demo**
+The `/api/v3/index-pdf` endpoint accepts PDF uploads through the backend API for document indexing. It is not presented as a general user-facing upload feature.
+
+The endpoint currently does not implement authentication or authorization checks. Deploy it only in a trusted environment and restrict network access appropriately.
+
+When running the application on a Wi-Fi hotspot, devices that can reach the backend on port 8000 may also be able to access this endpoint. Use the application only on a trusted network.
+
+## Documentation
+
+เอกสารเพิ่มเติมอยู่ในโฟลเดอร์ `docs/`:
+
+- `docs/api-guide.md` — รายละเอียด API และข้อจำกัดการอัปโหลด PDF
+- `docs/architecture.md` — ภาพรวมสถาปัตยกรรมระบบ
+- `docs/migration-notes.md` — บันทึกการเปลี่ยนแปลงระหว่างการพัฒนา
