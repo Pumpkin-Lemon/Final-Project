@@ -85,6 +85,13 @@ model_cache/
 
 *.safetensors
 *.gguf
+# Additional model weights and training checkpoints
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pkl
+*.joblib
 
 # ==================================================
 # 8. LOGS & TEMPORARY FILES
@@ -146,3 +153,5 @@ coverage/
 
 # Local project backups
 /backups/
+# Local timestamped integration backups
+/backup_before_*/

@@ -1,8 +1,8 @@
 # SciTutor Workbench
 
-SciTutor Workbench เป็นเว็บแอปพลิเคชันสำหรับช่วยอธิบายและแก้โจทย์วิทยาศาสตร์ระดับชั้นมัธยมศึกษาปีที่ 3 โดยใช้เทคนิค Retrieval-Augmented Generation (RAG) เพื่อค้นหาข้อมูลจากเอกสาร PDF ที่จัดเก็บไว้ในฐานข้อมูลก่อนนำบริบทที่เกี่ยวข้องไปประกอบการสร้างคำตอบด้วย Ollama
+SciTutor Workbench เป็นเว็บแอปพลิเคชันสำหรับช่วยอธิบายและแก้โจทย์วิทยาศาสตร์ระดับชั้นมัธยมศึกษาปีที่ 3 โดยใช้เทคนิค Retrieval-Augmented Generation (RAG) เพื่อค้นหาข้อมูลจากเอกสาร PDF ที่จัดเก็บไว้ในฐานข้อมูล ก่อนนำบริบทที่เกี่ยวข้องไปประกอบการสร้างคำตอบด้วยโมเดล Qwen3-4B ที่ปรับแต่งด้วย LoRA
 
-ระบบประกอบด้วย Frontend สำหรับรับโจทย์และแสดงผล Backend ที่พัฒนาด้วย FastAPI ระบบค้นคืนข้อมูลจาก ChromaDB และโมเดลภาษาที่ทำงานผ่าน Ollama
+ระบบประกอบด้วย Frontend สำหรับรับโจทย์และแสดงผล Backend ที่พัฒนาด้วย FastAPI ระบบค้นคืนข้อมูลจาก ChromaDB และ LoRA Inference Server ซึ่งทำงานแยกจาก Environment ของ Backend
 
 ผลลัพธ์ประกอบด้วยคำอธิบาย ตัวแปรที่เกี่ยวข้อง คำถามชวนคิด ขั้นตอนการแก้โจทย์ และข้อมูลอ้างอิงจากเอกสาร PDF
 
@@ -11,7 +11,7 @@ SciTutor Workbench เป็นเว็บแอปพลิเคชันส�
 - **AI-powered Science Tutoring:** ช่วยอธิบายโจทย์วิทยาศาสตร์เป็นภาษาไทย เหมาะสำหรับนักเรียนระดับ ม.3
 - **PDF-based RAG:** ค้นคืนเนื้อหาจากเอกสาร PDF ที่จัดเก็บใน ChromaDB
 - **Multilingual Embedding:** ใช้ Sentence Transformers รุ่น `paraphrase-multilingual-MiniLM-L12-v2` สำหรับสร้าง Embeddings
-- **LLM Integration:** ใช้ Ollama ร่วมกับโมเดล `qwen3:4b` เพื่อสร้างคำตอบ
+- **LLM Integration:** ใช้โมเดล `Qwen3-4B` ที่ปรับแต่งด้วย LoRA Adapter เป็นโมเดลหลักในการสร้างคำตอบ
 - **Structured Responses:** ส่งผลลัพธ์ในรูปแบบ JSON ตาม Response Contract
 - **Image Preview:** รองรับการเลือกรูปภาพและแสดงตัวอย่างก่อนส่งคำถาม แต่ยังไม่มีระบบ OCR ผู้ใช้ต้องพิมพ์โจทย์เป็นข้อความ
 - **PDF Indexing:** ผู้ดูแลระบบสามารถอัปโหลดและจัดทำดัชนีเอกสาร PDF ผ่าน Backend API โดยไม่มีฟังก์ชันอัปโหลด PDF สำหรับผู้ใช้ทั่วไป
@@ -26,15 +26,15 @@ SciTutor Workbench ใช้สถาปัตยกรรม Client–Server �
 2. **FastAPI Backend:** เสิร์ฟ Frontend และรับคำขอ API เพื่อประมวลผลคำถาม จัดการเอกสาร PDF และข้อมูลแบบประเมิน
 3. **RAG Service:** สร้าง Query Embedding และค้นคืนเนื้อหาที่เกี่ยวข้องจาก ChromaDB
 4. **ChromaDB:** จัดเก็บข้อมูลเอกสารและ Metadata สำหรับการค้นคืน
-5. **Ollama:** รับคำถามและบริบทจาก PDF เพื่อสร้างคำตอบในรูปแบบ JSON
+5. **LoRA Inference Server:** โหลด Qwen3-4B และ LoRA Adapter เพื่อรับคำถามและบริบทจาก Backend แล้วสร้างคำตอบในรูปแบบ JSON
 
 ### Processing Flow
 
 ```text
-Browser → FastAPI → ChromaDB Retrieval → Ollama → JSON Response → Browser
+Browser → FastAPI → ChromaDB Retrieval → LoRA Inference Server → JSON Response → Browser
 ```
 
-API และการเชื่อมต่อกับ Ollama ทำงานผ่าน Backend โดย Frontend ไม่จำเป็นต้องเชื่อมต่อ Ollama โดยตรง
+Backend ติดต่อ LoRA Inference Server ผ่าน localhost โดยตรง ส่วน Frontend ติดต่อเฉพาะ FastAPI เท่านั้น Ollama ยังคงเก็บไว้เป็นทางเลือกสำรองแบบ Manual แยกจากเส้นทางการประมวลผลหลัก
 
 ## Technology Stack
 
@@ -48,8 +48,9 @@ API และการเชื่อมต่อกับ Ollama ทำงา�
 - PyMuPDF
 
 ### AI / Machine Learning
-- Ollama
-- `qwen3:4b`
+- Qwen3-4B
+- LoRA Adapter for inference
+- Ollama `qwen3:4b` (Manual fallback, not automatic)
 - `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
 
 ### Frontend
@@ -74,6 +75,7 @@ SciTutor-Workbench02/
 │   ├── models/
 │   │   └── schemas.py
 │   ├── services/
+│   │   ├── lora_service.py
 │   │   ├── ollama_service.py
 │   │   ├── pdf_service.py
 │   │   ├── rag_service.py
@@ -155,13 +157,25 @@ pip install -r requirements.txt
 
 สร้างไฟล์ `.env` จาก `.env.example` และกำหนดค่าตามสภาพแวดล้อมของเครื่อง
 
-### 6. Start Ollama
+### 6. Start the LoRA Inference Server
 
-ติดตั้งและเปิด Ollama พร้อมตรวจสอบว่ามีโมเดล `qwen3:4b` พร้อมใช้งาน
+LoRA Inference Server ทำงานใน Python Environment แยกต่างหากจาก Backend โดยใช้ไฟล์และโมเดลที่จัดเก็บไว้ใน `D:\SciTutor-Training`
+
+เปิด PowerShell หน้าต่างแรก แล้วรัน:
 
 ```powershell
-ollama pull qwen3:4b
+& "D:\SciTutor-Training\venv\Scripts\python.exe" "D:\SciTutor-Training\inference\lora_server.py"
 ```
+
+รอจน Server โหลดโมเดลเสร็จและแสดงสถานะพร้อมรับคำขอ โดย Server จะรับการเชื่อมต่อเฉพาะภายในเครื่องที่ `127.0.0.1:8001`
+
+**Important:**
+- ต้องเปิด LoRA Server ค้างไว้ขณะใช้งาน Backend
+- อย่าปิดหน้าต่าง LoRA Server ระหว่างใช้งาน
+- LoRA Server ใช้ Environment แยกจาก `.venv` ของโปรเจกต์
+- ไม่ต้องติดตั้ง Training Dependencies เพิ่มใน `requirements.txt` ของ Backend
+
+Ollama `qwen3:4b` ยังคงเป็นทางเลือกสำรองแบบ Manual แต่ไม่ใช่โมเดลหลักของ API และไม่มีการสลับไปใช้โดยอัตโนมัติ
 
 ### 7. Prepare the ChromaDB Collection
 
@@ -183,21 +197,25 @@ New-Item -ItemType Directory -Force .\data\uploads
 
 ### 8. Start the Backend
 
+หลังจาก LoRA Inference Server พร้อมทำงานแล้ว ให้เปิด PowerShell อีกหน้าต่างด้วยสิทธิ์ Administrator
+
+ไปยังโฟลเดอร์โปรเจกต์และรัน Launcher:
+
 ```powershell
-& ".\.venv\Scripts\python.exe" -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
+# Open PowerShell in the project root before running the launcher
+.\start_scitutor.ps1
 ```
 
-เปิดเว็บเบราว์เซอร์ที่:
+Launcher จะตรวจสอบเครือข่าย Wi-Fi และ IPv4 Address ปัจจุบัน ก่อนเริ่ม FastAPI บน Wi-Fi IP ที่ตรวจพบ ณ ขณะนั้น โดยใช้ Port `8000`
 
-```text
-http://127.0.0.1:8000/
-```
+เปิดเว็บเบราว์เซอร์ด้วย URL ที่ Launcher แสดง และตรวจสอบสถานะ Backend ผ่าน `/health`
 
-ตรวจสอบสถานะ Backend:
+**Startup Order:**
+1. เปิด LoRA Inference Server และรอจนพร้อมใช้งาน
+2. เปิด FastAPI ด้วย `start_scitutor.ps1`
+3. เข้าใช้งานผ่าน URL ที่ Launcher แสดง
 
-```text
-http://127.0.0.1:8000/health
-```
+หาก LoRA Server ไม่ทำงาน Backend จะไม่สามารถเรียกใช้โมเดลหลักเพื่อสร้างคำตอบได้
 
 ## Environment Configuration
 
@@ -369,13 +387,20 @@ sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 
 ### Answer Generation
 
-ระบบส่งคำถามและบริบทจากเอกสารที่ค้นคืนได้ไปยัง Ollama โดยใช้โมเดล:
+ระบบส่งคำถามและบริบทจากเอกสารที่ค้นคืนได้จาก ChromaDB ผ่าน Backend ไปยัง LoRA Inference Server ที่ทำงานบน `127.0.0.1:8001`
+
+โมเดลหลักที่ใช้คือ:
 
 ```text
-qwen3:4b
+Base Model: Qwen/Qwen3-4B
+Fine-tuned Adapter: LoRA Adapter
 ```
 
-ผลลัพธ์ถูกตรวจสอบรูปแบบ JSON ด้วย Pydantic ก่อนส่งกลับไปยัง API
+LoRA Server ทำงานใน Environment แยกที่ `D:\SciTutor-Training` ส่วน Backend ติดต่อผ่าน `backend/services/lora_service.py`
+
+ผลลัพธ์จากโมเดลจะถูกตรวจสอบรูปแบบ JSON ด้วย Pydantic ตาม Response Contract ก่อนส่งกลับไปยัง API
+
+Ollama `qwen3:4b` ไม่ได้ถูกเรียกใช้ในเส้นทางคำขอหลัก และไม่มี Automatic Fallback
 
 ### Source Citations
 
@@ -424,7 +449,7 @@ http://<CURRENT-WIFI-IP>:8000/
 - IP Address อาจเปลี่ยนแปลงตามเครือข่ายที่เชื่อมต่อ
 - ต้องรัน Launcher ใหม่เมื่อเปลี่ยนเครือข่ายหรือ IP Address
 - เครื่องที่รัน Backend ต้องเปิดอยู่ตลอดเวลาที่อุปกรณ์อื่นใช้งาน
-- Ollama ต้องทำงานบนเครื่อง Backend
+- LoRA Inference Server ต้องทำงานบนเครื่องเดียวกับ Backend และต้องเปิดไว้ที่ `127.0.0.1:8001`
 - Launcher ต้องใช้ PowerShell แบบ Administrator
 - Launcher ตรวจสอบเงื่อนไขของ Wi-Fi และ Network Profile แต่ไม่ได้ตรวจสอบโดยตรงว่าเครือข่ายนั้นเป็น Mobile Hotspot จริงหรือไม่
 

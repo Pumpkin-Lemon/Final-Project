@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from backend.models.schemas import AnalyzeRequest, AnalyzeResponse, SurveyRequest
 from backend.services.rag_service import retrieve
-from backend.services.ollama_service import answer
+from backend.services.lora_service import answer
 from backend.services.pdf_service import index_pdf
 from backend.services.survey_service import save, summary
 from backend.core.config import settings
@@ -40,7 +40,7 @@ def analyze(req: AnalyzeRequest):
     except RuntimeError as e:
         raise HTTPException(503, str(e))
     except Exception as e:
-        raise HTTPException(502, f"ประมวลผลด้วย Ollama ไม่สำเร็จ: {e}")
+        raise HTTPException(502, f"ประมวลผลด้วยโมเดล AI ไม่สำเร็จ: {e}")
 
 
 @router.post("/index-pdf")
