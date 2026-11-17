@@ -1,14 +1,30 @@
-﻿@charset "UTF-8";
+@charset "UTF-8";
+
+/* ========================================
+   Base Typography & Theme Colors
+======================================== */
 
 body {
     font-family: 'Sarabun', 'Inter', sans-serif;
+    background-color: #F8FAFC;
+    color: #1E293B;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.dark body {
+    background-color: #0F172A;
+    color: #F1F5F9;
+}
+
+/* Code Font */
 code, pre {
     font-family: 'JetBrains Mono', monospace;
 }
 
-/* Custom Scrollbar Styles */
+/* ========================================
+   Custom Scrollbar Styles
+======================================== */
+
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -26,8 +42,76 @@ code, pre {
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #475569;
 }
- 
-/* OCR progress initial width */
+
+/* ========================================
+   OCR Progress Bar
+======================================== */
+
 #ocr-progress {
     width: 15%;
+    background: linear-gradient(
+        to right,
+        #0D9488,
+        #2DD4BF
+    );
+    border-radius: 9999px;
+    transition: width 0.3s ease;
+}
+
+/* ========================================
+   Primary Teal Theme
+======================================== */
+
+:root {
+    --primary: #0D9488;
+    --primary-light: #CCFBF1;
+    --primary-dark: #115E59;
+
+    --bg-light: #F8FAFC;
+    --card-light: #FFFFFF;
+    --text-light: #1E293B;
+    --muted-light: #64748B;
+}
+
+.dark {
+    --primary: #2DD4BF;
+    --primary-light: #134E4A;
+    --primary-dark: #5EEAD4;
+
+    --bg-dark: #0F172A;
+    --card-dark: #1E293B;
+    --text-dark: #F1F5F9;
+    --muted-dark: #94A3B8;
+}
+
+/* ========================================
+   Selection Color
+======================================== */
+
+::selection {
+    background-color: #99F6E4;
+    color: #134E4A;
+}
+
+.dark ::selection {
+    background-color: #134E4A;
+    color: #CCFBF1;
+}
+
+/* ========================================
+   Focus Styles
+======================================== */
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus-visible {
+    outline-color: #0D9488;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus,
+.dark button:focus-visible {
+    outline-color: #2DD4BF;
 }
