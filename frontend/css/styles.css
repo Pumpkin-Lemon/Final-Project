@@ -1,17 +1,14 @@
 @charset "UTF-8";
 
 /* ========================================
-   Base Typography & Theme
+   Base Typography & Theme Colors
 ======================================== */
 
 body {
     font-family: 'Sarabun', 'Inter', sans-serif;
     background-color: #F8FAFC;
     color: #1E293B;
-
-    transition:
-        background-color 0.3s ease,
-        color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .dark body {
@@ -20,14 +17,12 @@ body {
 }
 
 /* Code Font */
-
-code,
-pre {
+code, pre {
     font-family: 'JetBrains Mono', monospace;
 }
 
 /* ========================================
-   Custom Scrollbar
+   Custom Scrollbar Styles
 ======================================== */
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -40,7 +35,7 @@ pre {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #CBD5E1;
+    background: #cbd5e1;
     border-radius: 9999px;
 }
 
@@ -54,110 +49,69 @@ pre {
 
 #ocr-progress {
     width: 15%;
-
     background: linear-gradient(
-        90deg,
+        to right,
         #0D9488,
         #2DD4BF
     );
-
     border-radius: 9999px;
     transition: width 0.3s ease;
 }
 
 /* ========================================
-   Navigation Tabs
-   Active Tab - Light Mode
+   Primary Teal Theme
 ======================================== */
 
-.tab-btn {
-    color: #64748B;
-    background-color: transparent;
+:root {
+    --primary: #0D9488;
+    --primary-light: #CCFBF1;
+    --primary-dark: #115E59;
 
-    border: 1px solid transparent;
-    border-radius: 0.75rem;
-
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease;
+    --bg-light: #F8FAFC;
+    --card-light: #FFFFFF;
+    --text-light: #1E293B;
+    --muted-light: #64748B;
 }
 
-/* Hover */
+.dark {
+    --primary: #2DD4BF;
+    --primary-light: #134E4A;
+    --primary-dark: #5EEAD4;
 
-.tab-btn:hover {
-    color: #0D9488;
-    background-color: #F1F5F9;
-}
-
-/* Selected Tab */
-
-.tab-btn.active {
-    color: #0D9488;
-    background-color: #CCFBF1;
-    border-color: #99F6E4;
-
-    font-weight: 700;
-}
-
-/* Selected Icon */
-
-.tab-btn.active i {
-    color: #0D9488;
+    --bg-dark: #0F172A;
+    --card-dark: #1E293B;
+    --text-dark: #F1F5F9;
+    --muted-dark: #94A3B8;
 }
 
 /* ========================================
-   Navigation Tabs - Dark Mode
-======================================== */
-
-.dark .tab-btn {
-    color: #94A3B8;
-}
-
-.dark .tab-btn:hover {
-    color: #5EEAD4;
-    background-color: #1E293B;
-}
-
-/* Selected Tab - Dark Mode */
-
-.dark .tab-btn.active {
-    color: #5EEAD4;
-
-    background-color: rgba(19, 78, 74, 0.5);
-
-    border-color: rgba(45, 212, 191, 0.25);
-}
-
-/* Selected Icon - Dark Mode */
-
-.dark .tab-btn.active i {
-    color: #5EEAD4;
-}
-
-/* ========================================
-   Keyboard Focus
-======================================== */
-
-.tab-btn:focus-visible {
-    outline: 2px solid #0D9488;
-    outline-offset: 2px;
-}
-
-.dark .tab-btn:focus-visible {
-    outline-color: #2DD4BF;
-}
-
-/* ========================================
-   Text Selection
+   Selection Color
 ======================================== */
 
 ::selection {
-    color: #134E4A;
     background-color: #99F6E4;
+    color: #134E4A;
 }
 
 .dark ::selection {
-    color: #CCFBF1;
     background-color: #134E4A;
+    color: #CCFBF1;
+}
+
+/* ========================================
+   Focus Styles
+======================================== */
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus-visible {
+    outline-color: #0D9488;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus,
+.dark button:focus-visible {
+    outline-color: #2DD4BF;
 }
