@@ -7,7 +7,506 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        tailwind.config = {<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบส่งเสริมการเรียนรู้วิทยาศาสตร์ ม.3 สสวท. (PDF RAG & GraphRAG-GAN)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
         tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        argon: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Sarabun', 'Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Sarabun & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Teal theme: light/dark palette and custom scrollbar -->
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- Header & Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-600 to-teal-400 flex items-center justify-center text-white shadow-md">
+                        <i class="fa-solid fa-atom text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-lg text-slate-900 dark:text-white leading-tight">SciTutor Workbench</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/50 text-teal-800 dark:text-teal-300 font-medium">ม.3 สสวท. PDF RAG</span>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Interactive PDF Knowledge-Base Learning System (No Chat)</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <button onclick="switchTab('solver')" id="nav-solver" class="tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-teal-600 bg-teal-50 dark:bg-slate-800 dark:text-teal-400 transition-colors">
+                        <i class="fa-solid fa-microchip mr-1.5"></i> OCR Solver & Socratic Cards
+                    </button>
+                    <button onclick="switchTab('lessons')" id="nav-lessons" class="tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-book-open text-emerald-500 mr-1.5"></i> สรุปองค์ความรู้
+                    </button>
+                    <button onclick="switchTab('architecture')" id="nav-architecture" class="tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        <i class="fa-solid fa-code text-argon-500 mr-1.5"></i> Backend Code Viewer
+                    </button>
+                </nav>
+
+                <!-- Right Controls: Theme Toggle & Survey Modal Button -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="openSurveyModal()" class="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 transition">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>ประเมินความพึงพอใจ</span>
+                    </button>
+                    <button id="theme-toggle" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none">
+                        <i id="theme-toggle-dark-icon" class="fa-solid fa-moon text-lg hidden"></i>
+                        <i id="theme-toggle-light-icon" class="fa-solid fa-sun text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu Dropdown -->
+        <div class="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 flex overflow-x-auto gap-2 text-xs">
+            <button onclick="switchTab('solver')" class="px-3 py-1.5 rounded-lg whitespace-nowrap bg-teal-50 font-medium text-teal-600 dark:bg-slate-800 dark:text-teal-400">2. OCR & Socratic Cards</button>
+            <button onclick="switchTab('lessons')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">3. สรุปบทเรียน</button>
+            <button onclick="switchTab('architecture')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">4. Backend Code Viewer</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- Hero Objective Banner -->
+        <div class="mb-6 p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden shadow-lg">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-teal-500/20 blur-3xl"></div>
+            <div class="absolute right-40 -top-10 w-48 h-48 rounded-full bg-argon-500/20 blur-3xl"></div>
+
+            <div class="relative z-10">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                        <i class="fa-solid fa-file-pdf mr-1 text-rose-400"></i> PDF Knowledge-Base Powered RAG (No Chat)
+                    </span>
+                    <div class="flex items-center space-x-3 text-xs text-slate-300">
+                        <span class="flex items-center"><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i> PDF Grounded Zero Hallucination</span>
+                        <span class="flex items-center"><i class="fa-solid fa-brain text-argon-400 mr-1"></i> Socratic Method</span>
+                    </div>
+                </div>
+
+                <h1 class="text-xl sm:text-2xl font-bold tracking-tight">ระบบวิเคราะห์โจทย์และส่งเสริมการเรียนรู้โดยดึงข้อมูลตรงจาก PDF หนังสือเรียน สสวท. ม.3</h1>
+                <p class="mt-1 text-sm text-slate-300 max-w-4xl leading-relaxed">
+                    ระบบดึงข้อความจากไฟล์ PDF ตำราเรียน สสวท. (PDF Indexing & PyMuPDF RAG) ร่วมกับ <strong>Argon AI & GraphRAG-GAN</strong> เพื่อควบคุมขอบเขตเนื้อหาตามหนังสือเรียน พร้อมแสดงเลขหน้าและเนื้อหาอ้างอิงอย่างโปร่งใส
+                </p>
+
+                <!-- 3 Objectives -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 pt-4 border-t border-slate-700/60 text-xs">
+                    <div class="flex items-start space-x-2">
+                        <div class="w-5 h-5 rounded-full bg-teal-500/30 text-teal-300 flex items-center justify-center shrink-0 mt-0.5 font-bold">1</div>
+                        <div>
+                            <span class="font-semibold text-white">ระบบสกัด PDF RAG:</span>
+                            <span class="text-slate-300">อ่านไฟล์ PDF หนังสือเรียน สสวท., สกัด Vector Chunks และค้นหาอ้างอิงเลขหน้าอัตโนมัติ</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <div class="w-5 h-5 rounded-full bg-argon-500/30 text-argon-300 flex items-center justify-center shrink-0 mt-0.5 font-bold">2</div>
+                        <div>
+                            <span class="font-semibold text-white">Socratic Prompt Cards:</span>
+                            <span class="text-slate-300">กระตุ้นกระบวนการคิดวิเคราะห์พร้อมติดป้ายอ้างอิงย่อยตรงจาก PDF</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <div class="w-5 h-5 rounded-full bg-emerald-500/30 text-emerald-300 flex items-center justify-center shrink-0 mt-0.5 font-bold">3</div>
+                        <div>
+                            <span class="font-semibold text-white">ประเมินความพึงพอใจ:</span>
+                            <span class="text-slate-300">ศึกษาผลสัมฤทธิ์และความพึงพอใจของนักเรียนกลุ่มตัวอย่างชั้น ม.3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- TAB 2: OCR WORKSPACE & SOCRATIC CARDS (MAIN WORKBENCH) -->
+        <section id="tab-solver" class="tab-content block space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                <!-- Input Panel (Left Column - 5 cols) -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center mb-3">
+                            <i class="fa-solid fa-camera text-teal-500 mr-2"></i> สแกนภาพโจทย์ / เลือกชุดทดสอบ ม.3
+                        </h2>
+
+                        <!-- Upload Box -->
+                        <div id="drop-area" class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-5 text-center hover:border-teal-500 transition-colors bg-slate-50 dark:bg-slate-900/50 cursor-pointer relative">
+                            <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleFileSelect(event)">
+                            <div class="space-y-2" onclick="document.getElementById('file-input').click()">
+                                <div class="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 flex items-center justify-center mx-auto">
+                                    <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                                </div>
+                                <div class="text-xs font-medium text-slate-700 dark:text-slate-300">
+                                    คลิกอัปโหลดภาพโจทย์ หรือลากไฟล์มาวางที่นี่
+                                </div>
+                            </div>
+                            <div id="image-preview-container" class="hidden mt-3 relative">
+                                <img id="image-preview" src="" alt="โจทย์ปัญหา" class="max-h-40 mx-auto rounded-lg border border-slate-200 dark:border-slate-700">
+                                <button onclick="removeImage(event)" class="absolute top-1 right-1 bg-rose-500 text-white rounded-full p-1 text-xs hover:bg-rose-600">
+                                    <i class="fa-solid fa-xmark w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Text Fallback Area -->
+                        <div class="mt-4">
+                            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">หรือ พิมพ์ข้อความโจทย์ปัญหา:</label>
+                            <textarea id="question-text" rows="3" class="w-full rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-3 text-xs focus:ring-2 focus:ring-teal-500 focus:outline-none dark:text-slate-100" placeholder="เลือกตัวอย่างโจทย์ด้านล่าง หรือพิมพ์คำถาม..."></textarea>
+                        </div>
+
+                        <!-- Presets for fast testing -->
+                        <div class="mt-3">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block mb-1 font-medium">ชุดโจทย์ทดสอบ (เทียบเคียง PDF สสวท. ม.3):</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="loadPreset(1)" class="px-2.5 py-1 rounded-md text-xs bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-teal-50 hover:text-teal-600 transition">⚡ คำนวณค่าไฟฟ้า (หน้า 82)</button>
+                                <button onclick="loadPreset(2)" class="px-2.5 py-1 rounded-md text-xs bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-teal-50 hover:text-teal-600 transition">🧬 พันธุศาสตร์ (หน้า 45)</button>
+                                <button onclick="loadPreset(3)" class="px-2.5 py-1 rounded-md text-xs bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-teal-50 hover:text-teal-600 transition">🧪 ดุลสมการเคมี (หน้า 114)</button>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button onclick="processOCR()" class="w-full mt-4 py-3 px-4 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 text-white font-semibold shadow-md hover:opacity-95 transition flex items-center justify-center space-x-2 text-xs">
+                            <i class="fa-solid fa-microchip text-sm"></i>
+                            <span>วิเคราะห์โจทย์ & ค้นอ้างอิงจาก PDF RAG</span>
+                        </button>
+                    </div>
+
+                    <!-- Knowledge Citation Box linked to PDF -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center">
+                            <i class="fa-solid fa-file-pdf text-rose-500 mr-1.5"></i> การอ้างอิงฐานข้อมูล PDF สสวท. (PDF RAG Citation)
+                        </h3>
+                        <div id="citation-info" class="text-xs text-slate-700 dark:text-slate-300 space-y-2">
+                            <p id="pdf-cite-page" class="text-[11px] text-slate-500 dark:text-slate-400">รอผลการค้นหาเอกสารอ้างอิง</p>
+                            <div id="citations-list" class="space-y-2"></div>
+                        </div>
+                    </div>
+                    </div>
+
+                <!-- Analysis & Socratic Cards Panel (Right Column - 7 cols) -->
+                <div class="lg:col-span-7 space-y-4">
+
+                    <!-- Progress Simulation Bar -->
+                    <div id="ocr-loading" class="hidden bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm text-center">
+                        <div class="inline-block p-3 rounded-full bg-rose-50 dark:bg-slate-700 text-rose-500 mb-2">
+                            <i class="fa-solid fa-arrows-spin text-xl animate-spin"></i>
+                        </div>
+                        <h3 id="ocr-status-title" class="font-bold text-slate-800 dark:text-slate-100 text-sm">กำลังค้นหาข้อความจาก PDF สสวท. & สร้าง Socratic Cards...</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">ประมวลผลผ่าน PDF Vector Retriever & Argon LLM</p>
+                        <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mt-3 overflow-hidden">
+                            <div id="ocr-progress" class="bg-gradient-to-r from-teal-500 to-teal-400 h-2 rounded-full transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <!-- Initial Placeholder State -->
+                    <div id="ocr-placeholder" class="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700 text-center flex flex-col items-center justify-center min-h-[380px]">
+                        <div class="w-16 h-16 rounded-full bg-rose-50 dark:bg-slate-700 text-rose-500 flex items-center justify-center mb-3">
+                            <i class="fa-solid fa-file-pdf text-2xl"></i>
+                        </div>
+                        <h3 class="text-base font-semibold text-slate-700 dark:text-slate-300">พร้อมดึงข้อมูลอ้างอิงตรงจาก PDF สสวท.</h3>
+                        <p class="text-xs text-slate-500 max-w-sm mt-1">เลือกชุดโจทย์ทางด้านซ้ายเพื่อทดลองดูการแยกตัวแปร, การ์ดโซเครติสพร้อมเลขหน้า PDF และลำดับวิธีทำที่ไม่มีข้อมูลเท็จ</p>
+                    </div>
+
+                    <!-- Result Panel (Rendered dynamically) -->
+                    <div id="ocr-result" class="hidden space-y-4">
+
+                        <!-- Main Answer -->
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-teal-200 dark:border-teal-900/50 shadow-sm space-y-3">
+                            <h3 class="text-sm font-bold text-teal-700 dark:text-teal-300">
+                                <i class="fa-solid fa-comment-dots mr-1.5"></i> คำตอบ
+                            </h3>
+                            <div id="answer-content" class="text-sm leading-relaxed text-slate-700 dark:text-slate-200 whitespace-pre-line"></div>
+                        </div>
+
+                        <!-- Panel 1: Variable & Parameter Extraction -->
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
+                            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3 mb-3">
+                                <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
+                                    <i class="fa-solid fa-list-check text-teal-500 mr-1.5"></i> 1. การแยกตัวแปรและเงื่อนไข (Parsed Variables)
+                                </h3>
+                                <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-mono">NLP Accuracy 99.4%</span>
+                            </div>
+                            <div id="extracted-vars-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                                <!-- Dynamic chips -->
+                            </div>
+                        </div>
+
+                        <!-- Panel 2: Socratic Critical Thinking Cards with PDF Citation -->
+                        <div class="bg-gradient-to-br from-amber-50/80 via-white to-purple-50/50 dark:from-slate-800 dark:to-slate-800/90 rounded-2xl p-5 border border-amber-200/80 dark:border-amber-900/40 shadow-sm space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xs font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider flex items-center">
+                                    <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5 text-sm"></i> 2. การ์ดตั้งคำถามเชิงวิพากษ์ (Socratic Cards with PDF Citation)
+                                </h3>
+                                <span class="px-2 py-0.5 rounded text-[10px] bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 font-medium"><i class="fa-solid fa-file-pdf mr-1"></i>PDF Grounded</span>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-300">
+                                AI วิเคราะห์โจทย์ร่วมกับเนื้อหาใน PDF หนังสือเรียน สสวท. เพื่อสร้างคำถามนำทางพร้อมเลขหน้าอ้างอิง:
+                            </p>
+
+                            <!-- Socratic Cards Container -->
+                            <div id="socratic-cards-container" class="space-y-3 pt-1">
+                                <!-- Dynamic Socratic Cards -->
+                            </div>
+                        </div>
+
+                        <!-- Panel 3: Step-by-Step Solution with PDF Context Check -->
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
+                                <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
+                                    <i class="fa-solid fa-stairs text-argon-500 mr-1.5"></i> 3. แสดงลำดับวิธีทำตามตำรา สสวท. (Transparent PDF Solution)
+                                </h3>
+                                <span class="text-[11px] text-slate-400"><i class="fa-solid fa-shield-halved text-emerald-500 mr-1"></i>Zero Hallucination</span>
+                            </div>
+                            <div id="solution-steps-container" class="space-y-3">
+                                <!-- Dynamic Steps -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: LESSON SUMMARY BOARD -->
+        <section id="tab-lessons" class="tab-content hidden space-y-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">กระดานสรุปบทเรียน วิทยาศาสตร์ ม.3 สสวท.</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">เนื้อหาครอบคลุม 4 กลุ่มสาระการเรียนรู้ ตามหลักสูตรแกนกลาง สสวท.</p>
+                </div>
+            </div>
+
+            <!-- 4 Categories Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Card 1: Physical Science (Electricity & Waves) -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg font-bold">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 font-semibold text-slate-600 dark:text-slate-300">หมวดที่ 1</span>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">วิทยาศาสตร์กายภาพ (ไฟฟ้า & คลื่น)</h3>
+                    <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-2 mb-4">
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-teal-500 mr-2 mt-0.5"></i><span><strong>วงจรไฟฟ้า:</strong> กฎของโอม (V = IR), การต่อตัวต้านทานแบบอนุกรมและขนาน</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-teal-500 mr-2 mt-0.5"></i><span><strong>พลังงานไฟฟ้า:</strong> W = P × t, ค่าไฟฟ้าบ้านเรือน (Unit) = (วัตต์/1000) × ชั่วโมง</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-teal-500 mr-2 mt-0.5"></i><span><strong>คลื่นและแสง:</strong> คลื่นแม่เหล็กไฟฟ้า, การสะท้อนและการหักเหของแสงผ่านเลนส์</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: Biological Science (Genetics & Ecosystem) -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg font-bold">
+                            <i class="fa-solid fa-dna"></i>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 font-semibold text-slate-600 dark:text-slate-300">หมวดที่ 2</span>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">วิทยาศาสตร์ชีวภาพ (พันธุศาสตร์ & ระบบนิเวศ)</h3>
+                    <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-2 mb-4">
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-emerald-500 mr-2 mt-0.5"></i><span><strong>พันธุศาสตร์:</strong> ยีน, โครโมโซม, DNA, กฎของเมนเดล (Mendel's Law)</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-emerald-500 mr-2 mt-0.5"></i><span><strong>การแบ่งเซลล์:</strong> ไมโทซิส (Mitosis) และ ไมโอซิส (Meiosis)</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-emerald-500 mr-2 mt-0.5"></i><span><strong>ระบบนิเวศ:</strong> สายใยอาหาร (Food Web), ถ่ายทอดพลังงาน 10% Rule</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 3: Chemical Reactions -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center text-lg font-bold">
+                            <i class="fa-solid fa-vial"></i>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 font-semibold text-slate-600 dark:text-slate-300">หมวดที่ 3</span>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">ปฏิกิริยาเคมีและวัสดุในชีวิตประจำวัน</h3>
+                    <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-2 mb-4">
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-purple-500 mr-2 mt-0.5"></i><span><strong>สมการเคมี:</strong> กฎทรงมวลและการดุลสมการเคมี (Law of Conservation of Mass)</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-purple-500 mr-2 mt-0.5"></i><span><strong>ประเภทปฏิกิริยา:</strong> ปฏิกิริยาดูดความร้อน (Endothermic) และ คายความร้อน (Exothermic)</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-purple-500 mr-2 mt-0.5"></i><span><strong>กรด-เบส:</strong> ค่า pH, ปฏิกิริยากรดกับโลหะ และการเกิดฝนกรด</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 4: Earth & Space Science -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-100 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-lg font-bold">
+                            <i class="fa-solid fa-globe"></i>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 font-semibold text-slate-600 dark:text-slate-300">หมวดที่ 4</span>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">วิทยาศาสตร์โลกและอวกาศ</h3>
+                    <ul class="text-xs text-slate-600 dark:text-slate-300 space-y-2 mb-4">
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-cyan-500 mr-2 mt-0.5"></i><span><strong>ระบบสุริยะ:</strong> แรงโค้งและวงโคจรของดาวเคราะห์ (Kepler & Gravity)</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-cyan-500 mr-2 mt-0.5"></i><span><strong>ปรากฏการณ์ดาราศาสตร์:</strong> ข้างขึ้นข้างแรม, อุปราคา, และน้ำขึ้นน้ำลง</span></li>
+                        <li class="flex items-start"><i class="fa-solid fa-angle-right text-cyan-500 mr-2 mt-0.5"></i><span><strong>เทคโนโลยีอวกาศ:</strong> ดาวเทียมสื่อสาร, สำรวจทรัพยากร, และกล้องโทรทรรศน์</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: BACKEND ARCHITECTURE & TECH SPEC VIEWER -->
+        <section id="tab-architecture" class="tab-content hidden space-y-6">
+            <!-- Tech Explanation Banner -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center">
+                        <i class="fa-brands fa-python text-amber-500 text-2xl mr-2"></i>
+                        สถาปัตยกรรมระบบ Backend (PDF RAG + PyMuPDF + Argon LLM)
+                    </h2>
+                    <span class="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300">
+                        PDF Knowledge-Base Engine
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                        <strong class="text-slate-800 dark:text-slate-100 block mb-1 font-semibold"><i class="fa-solid fa-file-pdf text-rose-500 mr-1"></i> 1. PyMuPDF Text Extractor:</strong>
+                        <p class="text-slate-600 dark:text-slate-400">อ่านไฟล์ PDF หนังสือเรียน สสวท. แยกแยะเลขหน้า ตาราง และสมการวิจัย</p>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                        <strong class="text-slate-800 dark:text-slate-100 block mb-1 font-semibold"><i class="fa-solid fa-database text-teal-500 mr-1"></i> 2. ChromaDB Vector Store:</strong>
+                        <p class="text-slate-600 dark:text-slate-400">เก็บ Vector Embeddings ของ PDF Text Chunks เพื่อค้นหาอ้างอิงที่ตรงที่สุด</p>
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                        <strong class="text-slate-800 dark:text-slate-100 block mb-1 font-semibold"><i class="fa-solid fa-shield-halved text-emerald-500 mr-1"></i> 3. Argon HHH Guardrail:</strong>
+                        <p class="text-slate-600 dark:text-slate-400">บังคับให้ Argon LLM สร้างเฉลยและ Socratic Cards จาก Context PDF ที่ดึงมาได้เท่านั้น</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Viewer Sub-tabs -->
+            <div class="bg-slate-900 text-slate-100 rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
+                <div class="px-4 py-3 bg-slate-950 border-b border-slate-800 flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        <span class="text-xs text-slate-400 font-mono ml-2">backend_system/</span>
+                    </div>
+
+                    <!-- File Tabs -->
+                    <div class="flex space-x-1">
+                        <button onclick="switchCodeFile('app')" id="code-tab-app" class="px-3 py-1 rounded text-xs font-mono font-medium bg-slate-800 text-teal-400">app.py</button>
+                        <button onclick="switchCodeFile('pdf_rag')" id="code-tab-pdf_rag" class="px-3 py-1 rounded text-xs font-mono font-medium text-slate-400 hover:text-white">pdf_rag_extractor.py</button>
+                        <button onclick="switchCodeFile('graphrag')" id="code-tab-graphrag" class="px-3 py-1 rounded text-xs font-mono font-medium text-slate-400 hover:text-white">graphrag_gan.py</button>
+                    </div>
+
+                    <button onclick="copyCodeSnippet()" class="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-mono transition flex items-center space-x-1">
+                        <i class="fa-regular fa-copy"></i>
+                        <span id="copy-btn-text">Copy Code</span>
+                    </button>
+                </div>
+
+                <div class="p-4 overflow-x-auto max-h-[500px] custom-scrollbar text-xs leading-relaxed">
+                    <pre><code id="code-display" class="language-python"># Select a file tab above to view Python code</code></pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Student Satisfaction Survey Modal -->
+    <div id="survey-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-2xl w-full p-6 border border-slate-200 dark:border-slate-700 shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 flex items-center justify-center">
+                        <i class="fa-solid fa-square-poll-vertical"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">ผลการประเมินความพึงพอใจนักเรียน (วัตถุประสงค์ข้อ 3)</h3>
+                </div>
+                <button onclick="closeSurveyModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <p class="text-xs text-slate-600 dark:text-slate-300">
+                    สรุปผลการประเมินความพึงพอใจของนักเรียนกลุ่มตัวอย่างชั้น ม.3 จำนวน N=120 คน หลังใช้งานระบบ Interactive Workbench (No-Chat Edition)
+                </p>
+
+                <!-- Chart Canvas -->
+                <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">กราฟระดับความพึงพอใจใน 4 ด้านสำคัญ:</h4>
+                    <div class="h-48 relative">
+                        <canvas id="satisfactionChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-2">
+                    <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">ทดลองส่งผลการประเมินความพึงพอใจ:</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block text-slate-600 dark:text-slate-400 mb-1">ความแม่นยำในการแยกตัวแปร OCR:</label>
+                            <select id="rate-ocr" class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-2 dark:text-slate-200">
+                                <option value="5">5 - มากที่สุด (98.4%)</option>
+                                <option value="4">4 - มาก</option>
+                                <option value="3">3 - ปานกลาง</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-600 dark:text-slate-400 mb-1">ความเข้าใจผ่าน Socratic Cards:</label>
+                            <select id="rate-socratic" class="w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-2 dark:text-slate-200">
+                                <option value="5">5 - มากที่สุด (เข้าใจง่ายกว่าแบบแชท)</option>
+                                <option value="4">4 - มาก</option>
+                                <option value="3">3 - ปานกลาง</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="submitSurveyFeedback()" class="w-full py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-xs hover:bg-emerald-700 transition">
+                        บันทึกผลการประเมิน
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-4 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span>© 2026 โครงงานแอปพลิเคชันเพื่อการศึกษาวิทยาศาสตร์ ม.3 (GraphRAG-GAN & Argon AI)</span>
+            <span class="text-slate-400">พัฒนาตรงตามมาตรฐานการเรียนรู้ สสวท. และกรอบแนวคิด HHH</span>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript Logic -->
+    <script src="js/config.js"></script><script src="js/api.js"></script><script src="js/solver.js"></script><script src="js/survey.js"></script><script src="js/code-viewer.js"></script><script src="js/theme.js"></script><script src="js/app.js"></script>
+</body>
+</html>
             darkMode: 'class',
             theme: {
                 extend: {
