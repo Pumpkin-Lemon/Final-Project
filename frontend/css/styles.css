@@ -1,30 +1,22 @@
 @charset "UTF-8";
 
-/* ========================================
-   Base Typography & Theme Colors (Warm Paper & Midnight Ink)
-======================================== */
-
+/* Base typography and page colors */
 body {
     font-family: 'Sarabun', 'Inter', sans-serif;
-    background-color: #FAF8F5;
-    color: #292524;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: #F8FAFC;
+    color: #1E293B;
 }
 
 .dark body {
-    background-color: #18181B;
-    color: #F4F4F5;
+    background-color: #0F172A;
+    color: #F1F5F9;
 }
 
-/* Code Font */
 code, pre {
     font-family: 'JetBrains Mono', monospace;
 }
 
-/* ========================================
-   Custom Scrollbar Styles
-======================================== */
-
+/* Custom Scrollbar Styles */
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -35,83 +27,15 @@ code, pre {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #d4d4d8;
+    background: #cbd5e1;
     border-radius: 9999px;
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #3f3f46;
+    background: #475569;
 }
 
-/* ========================================
-   OCR Progress Bar
-======================================== */
-
+/* OCR progress initial width */
 #ocr-progress {
     width: 15%;
-    background: linear-gradient(
-        to right,
-        #2563EB,
-        #60A5FA
-    );
-    border-radius: 9999px;
-    transition: width 0.3s ease;
-}
-
-/* ========================================
-   Primary Educational Theme Colors
-======================================== */
-
-:root {
-    --primary: #2563EB;
-    --primary-light: #DBEAFE;
-    --primary-dark: #1E40AF;
-
-    --bg-light: #FAF8F5;
-    --card-light: #FFFFFF;
-    --text-light: #292524;
-    --muted-light: #78716C;
-}
-
-.dark {
-    --primary: #60A5FA;
-    --primary-light: #1E3A8A;
-    --primary-dark: #93C5FD;
-
-    --bg-dark: #18181B;
-    --card-dark: #27272A;
-    --text-dark: #F4F4F5;
-    --muted-dark: #A1A1AA;
-}
-
-/* ========================================
-   Selection Color
-======================================== */
-
-::selection {
-    background-color: #DBEAFE;
-    color: #1E40AF;
-}
-
-.dark ::selection {
-    background-color: #1E3A8A;
-    color: #93C5FD;
-}
-
-/* ========================================
-   Focus Styles
-======================================== */
-
-input:focus,
-textarea:focus,
-select:focus,
-button:focus-visible {
-    outline-color: #2563EB;
-}
-
-.dark input:focus,
-.dark textarea:focus,
-.dark select:focus,
-.dark button:focus-visible {
-    outline-color: #60A5FA;
 }
