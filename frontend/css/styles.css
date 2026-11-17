@@ -1,15 +1,7 @@
 @charset "UTF-8";
 
-/* Base typography and page colors */
 body {
     font-family: 'Sarabun', 'Inter', sans-serif;
-    background-color: #F8FAFC;
-    color: #1E293B;
-}
-
-.dark body {
-    background-color: #0F172A;
-    color: #F1F5F9;
 }
 
 code, pre {
@@ -34,7 +26,7 @@ code, pre {
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #475569;
 }
-
+ 
 /* OCR progress initial width */
 #ocr-progress {
     width: 15%;
