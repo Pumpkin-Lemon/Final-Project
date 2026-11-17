@@ -496,5 +496,32 @@
     <script src="js/code-viewer.js"></script>
     <script src="js/theme.js"></script>
     <script src="js/app.js"></script>
+    <!-- บังคับให้ปุ่มเมนูเปลี่ยนกรอบไฮไลท์แน่นอน 100% -->
+    <script>
+        window.switchTab = function(id) {
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+            const target = document.getElementById(`tab-${id}`);
+            if (target) target.classList.remove("hidden");
+
+            document.querySelectorAll(".tab-btn").forEach(btn => {
+                btn.classList.remove("bg-blue-100", "dark:bg-zinc-700", "text-blue-700", "dark:text-blue-300", "ring-1", "ring-blue-400/50");
+                btn.classList.add("text-stone-600", "dark:text-zinc-300");
+            });
+
+            const activeBtns = document.querySelectorAll(`button[onclick="switchTab('${id}')"]`);
+            activeBtns.forEach(btn => {
+                btn.classList.remove("text-stone-600", "dark:text-zinc-300");
+                btn.classList.add("bg-blue-100", "dark:bg-zinc-700", "text-blue-700", "dark:text-blue-300", "ring-1", "ring-blue-400/50");
+            });
+
+            if (id === 'architecture' && typeof switchCodeFile === 'function') {
+                switchCodeFile('app');
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            window.switchTab('solver');
+        });
+    </script>
 </body>
 </html>
