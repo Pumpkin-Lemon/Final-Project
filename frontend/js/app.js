@@ -3,14 +3,10 @@ window.switchTab = id => {
         element.classList.add("hidden");
     });
 
-    document.getElementById(`tab-${id}`)?.classList.remove("hidden");
+    document.getElementById(`tab-${id}`).classList.remove("hidden");
 };
 
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     switchCodeFile("app");
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    if (typeof initTheme === "function") initTheme();
 });
