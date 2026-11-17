@@ -1,19 +1,19 @@
 @charset "UTF-8";
 
 /* ========================================
-   Base Typography & Theme Colors
+   Base Typography & Theme Colors (Warm Paper & Midnight Ink)
 ======================================== */
 
 body {
     font-family: 'Sarabun', 'Inter', sans-serif;
-    background-color: #F8FAFC;
-    color: #1E293B;
+    background-color: #FAF8F5;
+    color: #292524;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .dark body {
-    background-color: #0F172A;
-    color: #F1F5F9;
+    background-color: #18181B;
+    color: #F4F4F5;
 }
 
 /* Code Font */
@@ -35,12 +35,12 @@ code, pre {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: #d4d4d8;
     border-radius: 9999px;
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #475569;
+    background: #3f3f46;
 }
 
 /* ========================================
@@ -51,37 +51,37 @@ code, pre {
     width: 15%;
     background: linear-gradient(
         to right,
-        #0D9488,
-        #2DD4BF
+        #2563EB,
+        #60A5FA
     );
     border-radius: 9999px;
     transition: width 0.3s ease;
 }
 
 /* ========================================
-   Primary Teal Theme
+   Primary Educational Theme Colors
 ======================================== */
 
 :root {
-    --primary: #0D9488;
-    --primary-light: #CCFBF1;
-    --primary-dark: #115E59;
+    --primary: #2563EB;
+    --primary-light: #DBEAFE;
+    --primary-dark: #1E40AF;
 
-    --bg-light: #F8FAFC;
+    --bg-light: #FAF8F5;
     --card-light: #FFFFFF;
-    --text-light: #1E293B;
-    --muted-light: #64748B;
+    --text-light: #292524;
+    --muted-light: #78716C;
 }
 
 .dark {
-    --primary: #2DD4BF;
-    --primary-light: #134E4A;
-    --primary-dark: #5EEAD4;
+    --primary: #60A5FA;
+    --primary-light: #1E3A8A;
+    --primary-dark: #93C5FD;
 
-    --bg-dark: #0F172A;
-    --card-dark: #1E293B;
-    --text-dark: #F1F5F9;
-    --muted-dark: #94A3B8;
+    --bg-dark: #18181B;
+    --card-dark: #27272A;
+    --text-dark: #F4F4F5;
+    --muted-dark: #A1A1AA;
 }
 
 /* ========================================
@@ -89,13 +89,13 @@ code, pre {
 ======================================== */
 
 ::selection {
-    background-color: #99F6E4;
-    color: #134E4A;
+    background-color: #DBEAFE;
+    color: #1E40AF;
 }
 
 .dark ::selection {
-    background-color: #134E4A;
-    color: #CCFBF1;
+    background-color: #1E3A8A;
+    color: #93C5FD;
 }
 
 /* ========================================
@@ -106,12 +106,12 @@ input:focus,
 textarea:focus,
 select:focus,
 button:focus-visible {
-    outline-color: #0D9488;
+    outline-color: #2563EB;
 }
 
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus,
 .dark button:focus-visible {
-    outline-color: #2DD4BF;
+    outline-color: #60A5FA;
 }
