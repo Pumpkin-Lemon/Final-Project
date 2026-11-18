@@ -46,59 +46,57 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col">
-<!-- Header & Navigation Bar -->
-<header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16 gap-4">
-            
-            <!-- 1. ฝั่งซ้าย: โลโก้ + ชื่อเว็บ -->
-            <div class="flex items-center space-x-3 shrink-0">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-argon-500 flex items-center justify-center text-white shadow-md">
-                    <i class="fa-solid fa-atom text-xl"></i>
-                </div>
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <span class="font-bold text-lg text-slate-900 dark:text-white leading-tight">SciLearn & Practice</span>
-                        <span class="text-xs px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 font-medium">ม.3 สสวท. PDF RAG</span>
+
+    <!-- Header & Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Title (ฝั่งซ้าย) -->
+                <div class="flex items-center space-x-3 shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-argon-500 flex items-center justify-center text-white shadow-md">
+                        <i class="fa-solid fa-atom text-xl"></i>
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Interactive PDF Knowledge-Base Learning System (No Chat)</p>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-lg text-slate-900 dark:text-white leading-tight">SciLearn & Practice</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 font-medium">ม.3 สสวท. PDF RAG</span>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Interactive PDF Knowledge-Base Learning System (No Chat)</p>
+                    </div>
+                </div>
+
+                <!-- Right Controls & Navigation (ฝั่งขวา: ปุ่มแยกอิสระ ขยับใกล้ขึ้นอย่างสมดุล) -->
+                <div class="flex items-center space-x-3">
+                    <!-- Desktop Navigation Menu -->
+                    <nav class="hidden md:flex space-x-1.5">
+                        <button onclick="switchTab('solver')" id="nav-solver" class="tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                            <i class="fa-solid fa-microchip mr-1.5 text-brand-500"></i> Step-by-step & Socratic Cards
+                        </button>
+                        <button onclick="switchTab('lessons')" id="nav-lessons" class="tab-btn px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                            <i class="fa-solid fa-book-open text-emerald-500 mr-1.5"></i> สรุปองค์ความรู้
+                        </button>
+                    </nav>
+
+                    <!-- Survey Modal Button -->
+                    <button onclick="openSurveyModal()" class="hidden sm:flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 transition shrink-0">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>ประเมินความพึงพอใจ</span>
+                    </button>
+
+                    <!-- Theme Toggle Button -->
+                    <button id="theme-toggle" class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none shrink-0">
+                        <i id="theme-toggle-dark-icon" class="fa-solid fa-moon text-lg hidden"></i>
+                        <i id="theme-toggle-light-icon" class="fa-solid fa-sun text-lg"></i>
+                    </button>
                 </div>
             </div>
-
-            <!-- 2. ฝั่งขวา: รวมกลุ่มเมนู + ปุ่มประเมิน + ปุ่มสลับธีม ให้อยู่ชิดขวาเรียงต่อกันเป็นระเบียบ -->
-            <div class="flex items-center space-x-2 lg:space-x-3">
-                <!-- เมนูหลัก -->
-                <nav class="hidden md:flex items-center space-x-1 bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
-                    <button onclick="switchTab('solver')" id="nav-solver" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 transition-all">
-                        <i class="fa-solid fa-microchip mr-1.5 text-brand-500"></i>Step-by-step & Socratic Cards
-                    </button>
-                    <button onclick="switchTab('lessons')" id="nav-lessons" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-700 transition-all">
-                        <i class="fa-solid fa-book-open text-emerald-500 mr-1.5"></i>สรุปองค์ความรู้
-                    </button>
-                </nav>
-
-                <!-- เส้นคั่นบางๆ -->
-                <div class="hidden md:block h-5 w-[1px] bg-slate-200 dark:bg-slate-700"></div>
-
-                <!-- ปุ่มประเมินและปุ่มธีม -->
-                <button onclick="openSurveyModal()" class="hidden sm:flex items-center space-x-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 transition shrink-0">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span>ประเมินความพึงพอใจ</span>
-                </button>
-                <button id="theme-toggle" class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none shrink-0">
-                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon text-lg hidden"></i>
-                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun text-lg"></i>
-                </button>
-            </div>
-
         </div>
-    </div>
 
         <!-- Mobile Navigation Menu Dropdown -->
         <div class="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 flex overflow-x-auto gap-2 text-xs">
-            <button onclick="switchTab('solver')" class="px-3 py-1.5 rounded-lg whitespace-nowrap bg-brand-50 font-medium text-brand-600 dark:bg-slate-800 dark:text-brand-400">2. OCR & Socratic Cards</button>
-            <button onclick="switchTab('lessons')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">3. สรุปบทเรียน</button>
-            <button onclick="switchTab('architecture')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">4. Backend Code Viewer</button>
+            <button onclick="switchTab('solver')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">Step-by-step & Socratic Cards</button>
+            <button onclick="switchTab('lessons')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">สรุปบทเรียน</button>
+            <button onclick="switchTab('architecture')" class="px-3 py-1.5 rounded-lg whitespace-nowrap text-slate-600 dark:text-slate-300">Backend Code Viewer</button>
         </div>
     </header>
 
@@ -123,7 +121,7 @@
 
                 <h1 class="text-xl sm:text-2xl font-bold tracking-tight">เว็บแอปพลิเคชันเพื่อส่งเสริมการเรียนรู้และการทำแบบฝึกหัดวิชาวิทยาศาสตร์ ม.3</h1>
                 <p class="mt-1 text-sm text-slate-300 max-w-4xl leading-relaxed">
-                    ระบบดึงข้อความจากไฟล์ PDF ตำราเรียน สสวท. (PDF Indexing & PyMuPDF RAG) ร่วมกับ <strong>Ollama (qwen3:4b)</strong> เพื่อควบคุมขอบเขตเนื้อหาตามหนังสือเรียน พร้อมแสดงเลขหน้าและเนื้อหาอ้างอิงอย่างโปร่งใส
+                    ระบบดึงข้อความจากไฟล์ PDF ตำราเรียน สสวท. (PDF Indexing & PyMuPDF RAG) ร่วมกับ <strong>โมเดล Qwen3-4B ที่ปรับแต่งด้วย LoRA</strong> เพื่อควบคุมขอบเขตเนื้อหาตามหนังสือเรียน พร้อมแสดงเลขหน้าและเนื้อหาอ้างอิงอย่างโปร่งใส
                 </p>
 
                 <!-- 3 Objectives -->
@@ -146,12 +144,13 @@
                         <div class="w-5 h-5 rounded-full bg-emerald-500/30 text-emerald-300 flex items-center justify-center shrink-0 mt-0.5 font-bold">3</div>
                         <div>
                             <span class="font-semibold text-white">HHH Framework</span>
-                            <span class="text-slate-300">เสริมสร้างการเรียนรู้อย่างน่าเชื่อถือ ด้วย AI ภายใต้กรอบ HHH</span>
+                            <span class="text-slate-300">เสริมสร้างการเรียนรู้อย่างน่าเชื่อถือ ด้วย AI ภายใต้กรอบ Helpfulness, Honesty, Harmlessness</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <!-- TAB 2: OCR WORKSPACE & SOCRATIC CARDS (MAIN WORKBENCH) -->
         <section id="tab-solver" class="tab-content block space-y-6">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -215,7 +214,7 @@
                             <div id="citations-list" class="space-y-2"></div>
                         </div>
                     </div>
-                    </div>
+                </div>
 
                 <!-- Analysis & Socratic Cards Panel (Right Column - 7 cols) -->
                 <div class="lg:col-span-7 space-y-4">
@@ -226,7 +225,7 @@
                             <i class="fa-solid fa-arrows-spin text-xl animate-spin"></i>
                         </div>
                         <h3 id="ocr-status-title" class="font-bold text-slate-800 dark:text-slate-100 text-sm">กำลังค้นหาข้อความจาก PDF สสวท. & สร้าง Socratic Cards...</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">ประมวลผลผ่าน PDF Vector Retriever &  Ollama</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">ประมวลผลผ่าน PDF Vector Retriever & Ollama</p>
                         <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mt-3 overflow-hidden">
                             <div id="ocr-progress" class="bg-gradient-to-r from-rose-500 via-brand-500 to-argon-500 h-2 rounded-full transition-all duration-300"></div>
                         </div>
@@ -241,10 +240,8 @@
                         <p class="text-xs text-slate-500 max-w-sm mt-1">เลือกชุดโจทย์ทางด้านซ้ายเพื่อทดลองดูการแยกตัวแปร, การ์ดโซเครติสพร้อมเลขหน้า PDF และลำดับวิธีทำที่ไม่มีข้อมูลเท็จ</p>
                     </div>
 
-                    <!-- Result Panel (Rendered dynamically) -->
+                    <!-- Result Panel -->
                     <div id="ocr-result" class="hidden space-y-4">
-
-                        <!-- Main Answer -->
                         <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-brand-200 dark:border-brand-900/50 shadow-sm space-y-3">
                             <h3 class="text-sm font-bold text-brand-700 dark:text-brand-300">
                                 <i class="fa-solid fa-comment-dots mr-1.5"></i> คำตอบ
@@ -260,12 +257,10 @@
                                 </h3>
                                 <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-mono">NLP Accuracy 99.4%</span>
                             </div>
-                            <div id="extracted-vars-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                                <!-- Dynamic chips -->
-                            </div>
+                            <div id="extracted-vars-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs"></div>
                         </div>
 
-                        <!-- Panel 2: Socratic Critical Thinking Cards with PDF Citation -->
+                        <!-- Panel 2: Socratic Cards -->
                         <div class="bg-gradient-to-br from-amber-50/80 via-white to-purple-50/50 dark:from-slate-800 dark:to-slate-800/90 rounded-2xl p-5 border border-amber-200/80 dark:border-amber-900/40 shadow-sm space-y-3">
                             <div class="flex items-center justify-between">
                                 <h3 class="text-xs font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider flex items-center">
@@ -276,14 +271,10 @@
                             <p class="text-xs text-slate-600 dark:text-slate-300">
                                 AI วิเคราะห์โจทย์ร่วมกับเนื้อหาใน PDF หนังสือเรียน สสวท. เพื่อสร้างคำถามนำทางพร้อมเลขหน้าอ้างอิง:
                             </p>
-
-                            <!-- Socratic Cards Container -->
-                            <div id="socratic-cards-container" class="space-y-3 pt-1">
-                                <!-- Dynamic Socratic Cards -->
-                            </div>
+                            <div id="socratic-cards-container" class="space-y-3 pt-1"></div>
                         </div>
 
-                        <!-- Panel 3: Step-by-Step Solution with PDF Context Check -->
+                        <!-- Panel 3: Step-by-Step Solution -->
                         <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
                             <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/60 pb-3">
                                 <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center">
@@ -291,11 +282,8 @@
                                 </h3>
                                 <span class="text-[11px] text-slate-400"><i class="fa-solid fa-shield-halved text-emerald-500 mr-1"></i>HHH Framework</span>
                             </div>
-                            <div id="solution-steps-container" class="space-y-3">
-                                <!-- Dynamic Steps -->
-                            </div>
+                            <div id="solution-steps-container" class="space-y-3"></div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -310,9 +298,8 @@
                 </div>
             </div>
 
-            <!-- 4 Categories Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Card 1: Physical Science (Electricity & Waves) -->
+                <!-- Card 1: Physical Science -->
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg font-bold">
@@ -328,7 +315,7 @@
                     </ul>
                 </div>
 
-                <!-- Card 2: Biological Science (Genetics & Ecosystem) -->
+                <!-- Card 2: Biological Science -->
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm">
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg font-bold">
@@ -378,9 +365,8 @@
             </div>
         </section>
 
-        <!-- TAB 4: BACKEND ARCHITECTURE & TECH SPEC VIEWER -->
+        <!-- TAB 4: BACKEND ARCHITECTURE -->
         <section id="tab-architecture" class="tab-content hidden space-y-6">
-            <!-- Tech Explanation Banner -->
             <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
                 <div class="flex items-center justify-between flex-wrap gap-2">
                     <h2 class="text-lg font-bold text-slate-900 dark:text-white flex items-center">
@@ -459,7 +445,6 @@
                     สรุปผลการประเมินความพึงพอใจของนักเรียนกลุ่มตัวอย่างชั้น ม.3 จำนวน N=120 คน หลังใช้งานระบบ Interactive Workbench (No-Chat Edition)
                 </p>
 
-                <!-- Chart Canvas -->
                 <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
                     <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">กราฟระดับความพึงพอใจใน 4 ด้านสำคัญ:</h4>
                     <div class="h-48 relative">
@@ -498,12 +483,18 @@
     <!-- Footer -->
     <footer class="mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-4 text-center text-xs text-slate-500">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <span>© 2026 โครงงานแอปพลิเคชันเพื่อการศึกษาวิทยาศาสตร์ ม.3 (GraphRAG-GAN & Ollama(qwen3:4b))</span>
+            <span>© 2026 โครงการพัฒนาเว็บแอปพลิเคชันเพื่อส่งเสริมการเรียนรู้และการทำแบบฝึกหัดวิชาวิทยาศาสตร์ ม.3 (PDF Indexing & PyMuPDF RAG ร่วมกับโมเดล Qwen3-4B ที่ปรับแต่งด้วย LoRA)</span>
             <span class="text-slate-400">พัฒนาตรงตามมาตรฐานการเรียนรู้ สสวท. และกรอบแนวคิด HHH</span>
         </div>
     </footer>
 
     <!-- Custom JavaScript Logic -->
-    <script src="js/config.js"></script><script src="js/api.js"></script><script src="js/solver.js"></script><script src="js/survey.js"></script><script src="js/code-viewer.js"></script><script src="js/theme.js"></script><script src="js/app.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/solver.js"></script>
+    <script src="js/survey.js"></script>
+    <script src="js/code-viewer.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
