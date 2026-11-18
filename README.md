@@ -1,6 +1,6 @@
-# SciTutor Workbench
+# SciLearn & Practice
 
-SciTutor Workbench เป็นเว็บแอปพลิเคชันสำหรับช่วยอธิบายและแก้โจทย์วิทยาศาสตร์ระดับชั้นมัธยมศึกษาปีที่ 3 โดยใช้เทคนิค Retrieval-Augmented Generation (RAG) เพื่อค้นหาข้อมูลจากเอกสาร PDF ที่จัดเก็บไว้ในฐานข้อมูล ก่อนนำบริบทที่เกี่ยวข้องไปประกอบการสร้างคำตอบด้วยโมเดล Qwen3-4B ที่ปรับแต่งด้วย LoRA
+SciLearn & Practice เป็นเว็บแอปพลิเคชันสำหรับช่วยอธิบายและแก้โจทย์วิทยาศาสตร์ระดับชั้นมัธยมศึกษาปีที่ 3 โดยใช้เทคนิค Retrieval-Augmented Generation (RAG) เพื่อค้นหาข้อมูลจากเอกสาร PDF ที่จัดเก็บไว้ในฐานข้อมูล ก่อนนำบริบทที่เกี่ยวข้องไปประกอบการสร้างคำตอบด้วยโมเดล Qwen3-4B ที่ปรับแต่งด้วย LoRA
 
 ระบบประกอบด้วย Frontend สำหรับรับโจทย์และแสดงผล Backend ที่พัฒนาด้วย FastAPI ระบบค้นคืนข้อมูลจาก ChromaDB และ LoRA Inference Server ซึ่งทำงานแยกจาก Environment ของ Backend
 
@@ -20,7 +20,7 @@ SciTutor Workbench เป็นเว็บแอปพลิเคชันส�
 
 ## System Architecture
 
-SciTutor Workbench ใช้สถาปัตยกรรม Client–Server โดยแบ่งการทำงานออกเป็นส่วนต่าง ๆ ดังนี้
+SciLearn & Practice ใช้สถาปัตยกรรม Client–Server โดยแบ่งการทำงานออกเป็นส่วนต่าง ๆ ดังนี้
 
 1. **Frontend:** รับคำถาม แสดงผลการวิเคราะห์ ขั้นตอนการแก้โจทย์ และข้อมูลอ้างอิง โดยทำงานจากหน้าเว็บที่ FastAPI เสิร์ฟ
 2. **FastAPI Backend:** เสิร์ฟ Frontend และรับคำขอ API เพื่อประมวลผลคำถาม จัดการเอกสาร PDF และข้อมูลแบบประเมิน
@@ -219,7 +219,7 @@ Launcher จะตรวจสอบเครือข่าย Wi-Fi และ 
 
 ## Environment Configuration
 
-SciTutor Workbench ใช้ไฟล์ `.env` สำหรับกำหนดค่าการทำงานของ Backend
+SciLearn & Practice ใช้ไฟล์ `.env` สำหรับกำหนดค่าการทำงานของ Backend
 
 ตัวอย่างค่าที่ใช้:
 
@@ -410,7 +410,7 @@ Ollama `qwen3:4b` ไม่ได้ถูกเรียกใช้ในเ�
 
 ## Network Deployment
 
-SciTutor Workbench สามารถเปิดใช้งานผ่านเครือข่าย Wi-Fi หรือ Mobile Hotspot เพื่อให้ผู้ใช้อุปกรณ์อื่นเข้าถึงเว็บแอปพลิเคชันผ่านเครื่องที่รัน Backend ได้
+SciLearn & Practice สามารถเปิดใช้งานผ่านเครือข่าย Wi-Fi หรือ Mobile Hotspot เพื่อให้ผู้ใช้อุปกรณ์อื่นเข้าถึงเว็บแอปพลิเคชันผ่านเครื่องที่รัน Backend ได้
 
 ### Start with PowerShell Launcher
 
