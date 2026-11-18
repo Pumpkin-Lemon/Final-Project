@@ -477,3 +477,11 @@ When running the application on a Wi-Fi hotspot, devices that can reach the back
 - `docs/api-guide.md` — รายละเอียด API และข้อจำกัดการอัปโหลด PDF
 - `docs/architecture.md` — ภาพรวมสถาปัตยกรรมระบบ
 - `docs/migration-notes.md` — บันทึกการเปลี่ยนแปลงระหว่างการพัฒนา
+
+### Team Member and Role
+- 6752300232 นางสาวกรกมล โตโส — Frontend/UI
+- 6752300810 นางสาวกนกณัฐ กึ่งพุทธพงศ์ — ???
+- 6752300828 นายณธกร จินดาจิรภัทร — ???
+- 6752300895 นางสาวนพวรรณ อังคตรีรัตน์ —
+- 6752301115 นางสาวศศิธร ปาโส — ???
+- 6752301361 นางสาวอโนชา สาดสะดี — ???
