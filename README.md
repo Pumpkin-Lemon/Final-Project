@@ -484,4 +484,4 @@ When running the application on a Wi-Fi hotspot, devices that can reach the back
 - 6752300828 นายณธกร จินดาจิรภัทร — ???
 - 6752300895 นางสาวนพวรรณ อังคตรีรัตน์ — AI & Backend Development
 - 6752301115 นางสาวศศิธร ปาโส — ???
-- 6752301361 นางสาวอโนชา สาดสะดี — ???
+- 6752301361 นางสาวอโนชา สาดสะดี — Video Editor
